@@ -1,0 +1,40 @@
+tick   0   BANK = 0   RA = 0   ACT
+tick   1   BANK = 0   RA = 0   
+tick   2   BANK = 0   RA = 0   
+tick   3   BANK = 0   RA = 0   
+tick   4   BANK = 0   RA = 0   
+tick   5   BANK = 0   RA = 0   
+tick   6   BANK = 0   RA = 0   
+tick   7   BANK = 0   RA = 0   RD
+tick   8   BANK = 10   RA = 0   ACT
+tick   9   BANK = 10   RA = 0   
+tick  10   BANK = 10   RA = 0   
+tick  11   BANK = 10   RA = 0   
+tick  12   BANK = 10   RA = 0   
+tick  13   BANK = 10   RA = 0   
+tick  14   BANK = 10   RA = 0   
+tick  15   BANK = 10   RA = 0   RD
+tick  16   BANK = 0   RA = 1   
+tick  17   BANK = 0   RA = 1   PRE
+tick  18   BANK = 0   RA = 1   
+tick  19   BANK = 0   RA = 1   
+tick  20   BANK = 0   RA = 1   
+tick  21   BANK = 0   RA = 1   
+tick  22   BANK = 0   RA = 1   
+tick  23   BANK = 0   RA = 1   
+tick  24   BANK = 0   RA = 1   ACT
+tick  25   BANK = 0   RA = 1   
+tick  26   BANK = 0   RA = 1   
+tick  27   BANK = 0   RA = 1   
+tick  28   BANK = 0   RA = 1   
+tick  29   BANK = 0   RA = 1   
+tick  30   BANK = 0   RA = 1   
+tick  31   BANK = 0   RA = 1   RD
+tick  32   BANK = 0   RA = 1   WR
+tick  33   BANK = 2   RA = 0   ACT
+tick  34   BANK = 2   RA = 0   
+tick  35   BANK = 2   RA = 0   
+tick  36   BANK = 2   RA = 0   
+tick  37   BANK = 2   RA = 0   
+tick  38   BANK = 2   RA = 0   
+tick  39   BANK = 2   RA = 0   WR
