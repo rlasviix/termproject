@@ -92,12 +92,9 @@ public:
 
 	Level level;
 	int prev_BA;
-//	int SID;
 	int BA, RA, CA;
 	int counter = 0;
 	Request request;
-	
-//	int work(int SID, int BA, int RA, int CA, string command, ofstream &out);
 	int work(int BA, int RA, int CA, string command, ofstream& out);
 
 
@@ -106,7 +103,6 @@ private:
 	int change_command(State state, Request request, int id);
 
 	int wait(Timer* timer, Level level, Command pre_command, Command command);
-//	int data(Command command);
 
 	void init_timing();
 };

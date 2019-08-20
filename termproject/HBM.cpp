@@ -80,12 +80,10 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 			if ((&node[BA])->row_state[id] == State::Active) {
 				if (wait(timer, level, (&node[prev_BA])->command, Command::RD)) return false;
 				(&node[BA])->command = Command::RD;
-//				timer->cRD = 0;
 			}
 			else {
 				if (wait(timer, level, (&node[prev_BA])->command, Command::PRE)) return false;
 				(&node[BA])->command = Command::PRE;
-//				timer->cPRE[BA] = 0;
 			}
 		}
 		break;
@@ -103,12 +101,10 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 			if ((&node[BA])->row_state[id] == State::Active) {
 				if (wait(timer, level, (&node[prev_BA])->command, Command::WR)) return false;
 				(&node[BA])->command = Command::WR;
-//				timer->cWR = 0;
 			}
 			else {
 				if (wait(timer, level, (&node[prev_BA])->command, Command::PRE)) return false;
 				(&node[BA])->command = Command::PRE;
-//				timer->cPRE[BA] = 0;
 			}
 		}
 		break;
@@ -154,29 +150,6 @@ int HBM::wait(Timer* timer, Level level, Command pre_command, Command command) {
 		return false;
 	}
 }
-/*
-int HBM::wait(Timer* timer, Level level, Command command) {
-	switch (int(command)) {
-	case(int(Command::PRE)):
-		if (timer->cRD < timer->tRTP) return true;
-		if (timer->cWR < timer->tWR + timer->tWL + timer->nBL / 2) return true;
-		return false;
-	case(int(Command::RD)):
-		if (timer->cACT[BA] < timer->tRCD) return true;
-		if (timer->cRD < timer->tCCD) return true;
-		if (timer->cWR < timer->tWTR + timer->tWL + timer->nBL / 2) return true;
-		return false;
-	case(int(Command::WR)):
-		if (timer->cACT[BA] < timer->tRCD) return true;
-		if (timer->cWR < timer->tCCD) return true;
-		if (timer->cRD < timer->tRTW) return true;
-		return false;
-	case(int(Command::ACT)):
-		if (timer->cACT[BA] < timer->tRC) return true;
-		if (timer->cPRE[BA] < timer->tRP) return true;
-		return false;
-	}
-}*/
 
 void HBM::init_timing()
 {

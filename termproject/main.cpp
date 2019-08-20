@@ -4,11 +4,7 @@
 using namespace std;
 
 int main() {
-
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-	string s;
-	int SID, BA;
+	int BA;
 	int RA;
 	int CA;
 	int i = 0;
