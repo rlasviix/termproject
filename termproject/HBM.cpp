@@ -72,6 +72,9 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 			if (wait(timer, level, (&node[prev_BA])->command, Command::ACT)) return false;
 			(&node[BA])->command = Command::ACT;
 			timer->cACT[BA] = 0;
+			timer->act.push(timer->time);
+			if (timer->act.size() > 4)timer->act.pop();
+
 			break;
 		default:	//Active, Reading, Writing, Reading_pre, Writing_pre,
 			if ((&node[BA])->row_state[id] == State::Active) {
@@ -93,6 +96,8 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 			if (wait(timer, level, (&node[prev_BA])->command, Command::ACT)) return false;
 			(&node[BA])->command = Command::ACT;
 			timer->cACT[BA] = 0;
+			timer->act.push(timer->time);
+			if (timer->act.size() > 4)timer->act.pop();
 			break;
 		default:
 			if ((&node[BA])->row_state[id] == State::Active) {
@@ -114,6 +119,14 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 
 //level, 이전 command, 다음 command
 int HBM::wait(Timer* timer, Level level, Command pre_command, Command command) {
+	SpeedEntry& s = speed_table;
+	//nFAW
+	if (command == Command::ACT) {
+		if (timer->act.size() == 4 && timer->time - timer->act.front() < s.nFAW) {
+			return true;
+		}
+	}
+	
 	//같은 BANK ACT <-> PRE nRAS  ACT <-> ACT nRC
 	if (command == Command::ACT) {
 		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::ACT].val) {
@@ -222,7 +235,7 @@ void HBM::init_timing()
 
 	// RAS <-> RAS
 	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(1, s.nRRDS) });
-	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(4, s.nFAW) });
+//	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(4, s.nFAW) });
 	t[int(Command::ACT)].insert({ Command::PREA, TimingEntry(1, s.nRAS) });
 	t[int(Command::PREA)].insert({ Command::ACT, TimingEntry(1, s.nRP) });
 

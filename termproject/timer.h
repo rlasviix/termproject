@@ -1,6 +1,7 @@
 #pragma once
 #include<limits.h>
 #include<algorithm>
+#include <queue>
 
 using namespace std;
 
@@ -8,14 +9,13 @@ class Timer {
 public:
 	Timer() {
 		wait_counter = 0;
-//		cRD = INT_MAX; cWR = INT_MAX;
+		time = 0;
 		std::fill_n(cACT, 16, INT_MAX);
-//		std::fill_n(cPRE, 16, INT_MAX);
 	}
 	int wait_counter;
-//	int cRD, cWR;
+	int time;
 	int cACT[16];
-//	int cPRE[16];
+	queue<int> act;
 
 	void tick();
 };
