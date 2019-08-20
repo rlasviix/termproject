@@ -56,17 +56,7 @@ public:
 	};
 
 	/* Timing */
-	struct TimingEntry
-	{
-		TimingEntry() :dist(0), val(0) {}
-		TimingEntry(int distance, int value) : dist(distance), val(value) {}
-//		Command cmd;
-		int dist;
-		int val;
-	//	bool sibling;
-	};
-//	vector<TimingEntry> timing[int(Level::MAX)][int(Command::MAX)];
-	map<Command, TimingEntry> timing[int(Level::MAX)][int(Command::MAX)];
+	map<Command, int> timing[int(Level::MAX)][int(Command::MAX)];
 	
 
 

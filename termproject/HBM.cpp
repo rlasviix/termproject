@@ -129,12 +129,12 @@ int HBM::wait(Timer* timer, Level level, Command pre_command, Command command) {
 	
 	//같은 BANK ACT <-> PRE nRAS  ACT <-> ACT nRC
 	if (command == Command::ACT) {
-		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::ACT].val) {
+		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::ACT]) {
 			return true;
 		}
 	}
 	if (command == Command::PRE) {
-		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::PRE].val) {
+		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]) {
 			return true;
 		}
 	}
@@ -145,7 +145,7 @@ int HBM::wait(Timer* timer, Level level, Command pre_command, Command command) {
 		return false;
 	}
 	//이전 command 와의 timing
-	if (timer->wait_counter < timing[int(level)][int(pre_command)][command].val) {
+	if (timer->wait_counter < timing[int(level)][int(pre_command)][command]) {
 		return true;
 	}
 	else {
@@ -181,147 +181,147 @@ int HBM::wait(Timer* timer, Level level, Command command) {
 void HBM::init_timing()
 {
 	SpeedEntry& s = speed_table;
-	map<Command, TimingEntry>* t;
+	map<Command, int>* t;
 
 	/*** Channel ***/												//same channel
 	t = timing[int(Level::Channel)];
 
 	// CAS <-> CAS
-	t[int(Command::RD)].insert({ Command::RD, TimingEntry(1, s.nBL) });
-	t[int(Command::RD)].insert({ Command::RDA, TimingEntry(1, s.nBL) });
-	t[int(Command::RDA)].insert({ Command::RD, TimingEntry(1, s.nBL) });
-	t[int(Command::RDA)].insert({ Command::RDA, TimingEntry(1, s.nBL) });
-	t[int(Command::WR)].insert({ Command::WR, TimingEntry(1, s.nBL) });
-	t[int(Command::WR)].insert({ Command::WRA, TimingEntry(1, s.nBL) });
-	t[int(Command::WRA)].insert({ Command::WR, TimingEntry(1, s.nBL) });
-	t[int(Command::WRA)].insert({ Command::WRA, TimingEntry(1, s.nBL) });
+	t[int(Command::RD)].insert({ Command::RD, s.nBL });
+	t[int(Command::RD)].insert({ Command::RDA, s.nBL });
+	t[int(Command::RDA)].insert({ Command::RD, s.nBL });
+	t[int(Command::RDA)].insert({ Command::RDA, s.nBL });
+	t[int(Command::WR)].insert({ Command::WR, s.nBL });
+	t[int(Command::WR)].insert({ Command::WRA, s.nBL });
+	t[int(Command::WRA)].insert({ Command::WR, s.nBL });
+	t[int(Command::WRA)].insert({ Command::WRA, s.nBL });
 
 
 	/*** Rank ***/													//different bank group
 	t = timing[int(Level::Rank)];
 
 	// CAS <-> CAS
-	t[int(Command::RD)].insert({ Command::RD, TimingEntry(1, s.nCCDS) });
-	t[int(Command::RD)].insert({ Command::RDA, TimingEntry(1, s.nCCDS) });
-	t[int(Command::RDA)].insert({ Command::RD, TimingEntry(1, s.nCCDS) });
-	t[int(Command::RDA)].insert({ Command::RDA, TimingEntry(1, s.nCCDS) });
-	t[int(Command::WR)].insert({ Command::WR, TimingEntry(1, s.nCCDS) });
-	t[int(Command::WR)].insert({ Command::WRA, TimingEntry(1, s.nCCDS) });
-	t[int(Command::WRA)].insert({ Command::WR, TimingEntry(1, s.nCCDS) });
-	t[int(Command::WRA)].insert({ Command::WRA, TimingEntry(1, s.nCCDS) });
-	t[int(Command::RD)].insert({ Command::WR, TimingEntry(1, s.nCL + s.nCCDS + 2 - s.nCWL) });
-	t[int(Command::RD)].insert({ Command::WRA, TimingEntry(1, s.nCL + s.nCCDS + 2 - s.nCWL) });
-	t[int(Command::RDA)].insert({ Command::WR, TimingEntry(1, s.nCL + s.nCCDS + 2 - s.nCWL) });
-	t[int(Command::RDA)].insert({ Command::WRA, TimingEntry(1, s.nCL + s.nCCDS + 2 - s.nCWL) });
-	t[int(Command::WR)].insert({ Command::RD, TimingEntry(1, s.nCWL + s.nBL + s.nWTRS) });
-	t[int(Command::WR)].insert({ Command::RDA, TimingEntry(1, s.nCWL + s.nBL + s.nWTRS) });
-	t[int(Command::WRA)].insert({ Command::RD, TimingEntry(1, s.nCWL + s.nBL + s.nWTRS) });
-	t[int(Command::WRA)].insert({ Command::RDA, TimingEntry(1, s.nCWL + s.nBL + s.nWTRS) });
+	t[int(Command::RD)].insert({ Command::RD, s.nCCDS });
+	t[int(Command::RD)].insert({ Command::RDA, s.nCCDS });
+	t[int(Command::RDA)].insert({ Command::RD, s.nCCDS });
+	t[int(Command::RDA)].insert({ Command::RDA, s.nCCDS });
+	t[int(Command::WR)].insert({ Command::WR, s.nCCDS });
+	t[int(Command::WR)].insert({ Command::WRA, s.nCCDS });
+	t[int(Command::WRA)].insert({ Command::WR, s.nCCDS });
+	t[int(Command::WRA)].insert({ Command::WRA, s.nCCDS });
+	t[int(Command::RD)].insert({ Command::WR, s.nCL + s.nCCDS + 2 - s.nCWL });
+	t[int(Command::RD)].insert({ Command::WRA, s.nCL + s.nCCDS + 2 - s.nCWL });
+	t[int(Command::RDA)].insert({ Command::WR, s.nCL + s.nCCDS + 2 - s.nCWL });
+	t[int(Command::RDA)].insert({ Command::WRA, s.nCL + s.nCCDS + 2 - s.nCWL });
+	t[int(Command::WR)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRS });
+	t[int(Command::WR)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRS });
+	t[int(Command::WRA)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRS });
+	t[int(Command::WRA)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRS });
 
-	t[int(Command::RD)].insert({ Command::PREA, TimingEntry(1, s.nRTP) });
-	t[int(Command::WR)].insert({ Command::PREA, TimingEntry(1, s.nCWL + s.nBL + s.nWR) });
+	t[int(Command::RD)].insert({ Command::PREA, s.nRTP });
+	t[int(Command::WR)].insert({ Command::PREA, s.nCWL + s.nBL + s.nWR });
 
 	// CAS <-> PD
-	t[int(Command::RD)].insert({ Command::PDE, TimingEntry(1, s.nCL + s.nBL + 1) });
-	t[int(Command::RDA)].insert({ Command::PDE, TimingEntry(1, s.nCL + s.nBL + 1) });
-	t[int(Command::WR)].insert({ Command::PDE, TimingEntry(1, s.nCWL + s.nBL + s.nWR) });
-	t[int(Command::WRA)].insert({ Command::PDE, TimingEntry(1, s.nCWL + s.nBL + s.nWR + 1) }); // +1 for pre
-	t[int(Command::PDX)].insert({ Command::RD, TimingEntry(1, s.nXP) });
-	t[int(Command::PDX)].insert({ Command::RDA, TimingEntry(1, s.nXP) });
-	t[int(Command::PDX)].insert({ Command::WR, TimingEntry(1, s.nXP) });
-	t[int(Command::PDX)].insert({ Command::WRA, TimingEntry(1, s.nXP) });
+	t[int(Command::RD)].insert({ Command::PDE, s.nCL + s.nBL + 1 });
+	t[int(Command::RDA)].insert({ Command::PDE, s.nCL + s.nBL + 1 });
+	t[int(Command::WR)].insert({ Command::PDE, s.nCWL + s.nBL + s.nWR });
+	t[int(Command::WRA)].insert({ Command::PDE, s.nCWL + s.nBL + s.nWR + 1 }); // +1 for pre
+	t[int(Command::PDX)].insert({ Command::RD, s.nXP });
+	t[int(Command::PDX)].insert({ Command::RDA, s.nXP });
+	t[int(Command::PDX)].insert({ Command::WR, s.nXP });
+	t[int(Command::PDX)].insert({ Command::WRA, s.nXP });
 
 	// CAS <-> SR: none (all banks have to be precharged)
 
 	// RAS <-> RAS
-	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(1, s.nRRDS) });
-//	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(4, s.nFAW) });
-	t[int(Command::ACT)].insert({ Command::PREA, TimingEntry(1, s.nRAS) });
-	t[int(Command::PREA)].insert({ Command::ACT, TimingEntry(1, s.nRP) });
+	t[int(Command::ACT)].insert({ Command::ACT, s.nRRDS });
+//	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(4, s.nFAW });
+	t[int(Command::ACT)].insert({ Command::PREA, s.nRAS });
+	t[int(Command::PREA)].insert({ Command::ACT, s.nRP });
 
 	// RAS <-> REF
-	t[int(Command::PRE)].insert({ Command::REF, TimingEntry(1, s.nRP) });
-	t[int(Command::PREA)].insert({ Command::REF, TimingEntry(1, s.nRP) });
-	t[int(Command::REF)].insert({ Command::ACT, TimingEntry(1, s.nRFC) });
+	t[int(Command::PRE)].insert({ Command::REF, s.nRP });
+	t[int(Command::PREA)].insert({ Command::REF, s.nRP });
+	t[int(Command::REF)].insert({ Command::ACT, s.nRFC });
 
 	// RAS <-> PD
-	t[int(Command::ACT)].insert({ Command::PDE, TimingEntry(1, 1) });
-	t[int(Command::PDX)].insert({ Command::ACT, TimingEntry(1, s.nXP) });
-	t[int(Command::PDX)].insert({ Command::PRE, TimingEntry(1, s.nXP) });
-	t[int(Command::PDX)].insert({ Command::PREA, TimingEntry(1, s.nXP) });
+	t[int(Command::ACT)].insert({ Command::PDE, 1 });
+	t[int(Command::PDX)].insert({ Command::ACT, s.nXP });
+	t[int(Command::PDX)].insert({ Command::PRE, s.nXP });
+	t[int(Command::PDX)].insert({ Command::PREA, s.nXP });
 
 	// RAS <-> SR
-	t[int(Command::PRE)].insert({ Command::SRE, TimingEntry(1, s.nRP) });
-	t[int(Command::PREA)].insert({ Command::SRE, TimingEntry(1, s.nRP) });
-	t[int(Command::SRX)].insert({ Command::ACT, TimingEntry(1, s.nXS) });
+	t[int(Command::PRE)].insert({ Command::SRE, s.nRP });
+	t[int(Command::PREA)].insert({ Command::SRE, s.nRP });
+	t[int(Command::SRX)].insert({ Command::ACT, s.nXS });
 
 	// REF <-> REF
-	t[int(Command::REF)].insert({ Command::REF, TimingEntry(1, s.nRFC) });
+	t[int(Command::REF)].insert({ Command::REF, s.nRFC });
 
 	// REF <-> PD
-	t[int(Command::REF)].insert({ Command::PDE, TimingEntry(1, 1) });
-	t[int(Command::PDX)].insert({ Command::REF, TimingEntry(1, s.nXP) });
+	t[int(Command::REF)].insert({ Command::PDE, 1 });
+	t[int(Command::PDX)].insert({ Command::REF, s.nXP });
 
 	// REF <-> SR
-	t[int(Command::SRX)].insert({ Command::REF, TimingEntry(1, s.nXS) });
+	t[int(Command::SRX)].insert({ Command::REF, s.nXS });
 
 	// PD <-> PD
-	t[int(Command::PDE)].insert({ Command::PDX, TimingEntry(1, s.nPD) });
-	t[int(Command::PDX)].insert({ Command::PDE, TimingEntry(1, s.nXP) });
+	t[int(Command::PDE)].insert({ Command::PDX, s.nPD });
+	t[int(Command::PDX)].insert({ Command::PDE, s.nXP });
 
 	// PD <-> SR
-	t[int(Command::PDX)].insert({ Command::SRE, TimingEntry(1, s.nXP) });
-	t[int(Command::SRX)].insert({ Command::PDE, TimingEntry(1, s.nXS) });
+	t[int(Command::PDX)].insert({ Command::SRE, s.nXP });
+	t[int(Command::SRX)].insert({ Command::PDE, s.nXS });
 
 	// SR <-> SR
-	t[int(Command::SRE)].insert({ Command::SRX, TimingEntry(1, s.nCKESR) });
-	t[int(Command::SRX)].insert({ Command::SRE, TimingEntry(1, s.nXS) });
+	t[int(Command::SRE)].insert({ Command::SRX, s.nCKESR });
+	t[int(Command::SRX)].insert({ Command::SRE, s.nXS });
 
 	/*** Bank Group ***/											//same bank group
 	t = timing[int(Level::BankGroup)];
 	// CAS <-> CAS
-	t[int(Command::RD)].insert({ Command::RD, TimingEntry(1, s.nCCDL) });
-	t[int(Command::RD)].insert({ Command::RDA, TimingEntry(1, s.nCCDL) });
-	t[int(Command::RDA)].insert({ Command::RD, TimingEntry(1, s.nCCDL) });
-	t[int(Command::RDA)].insert({ Command::RDA, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WR)].insert({ Command::WR, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WR)].insert({ Command::WRA, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WRA)].insert({ Command::WR, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WRA)].insert({ Command::WRA, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WR)].insert({ Command::WR, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WR)].insert({ Command::WRA, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WRA)].insert({ Command::WR, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WRA)].insert({ Command::WRA, TimingEntry(1, s.nCCDL) });
-	t[int(Command::WR)].insert({ Command::RD, TimingEntry(1, s.nCWL + s.nBL + s.nWTRL) });
-	t[int(Command::WR)].insert({ Command::RDA, TimingEntry(1, s.nCWL + s.nBL + s.nWTRL) });
-	t[int(Command::WRA)].insert({ Command::RD, TimingEntry(1, s.nCWL + s.nBL + s.nWTRL) });
-	t[int(Command::WRA)].insert({ Command::RDA, TimingEntry(1, s.nCWL + s.nBL + s.nWTRL) });
+	t[int(Command::RD)].insert({ Command::RD, s.nCCDL });
+	t[int(Command::RD)].insert({ Command::RDA, s.nCCDL });
+	t[int(Command::RDA)].insert({ Command::RD, s.nCCDL });
+	t[int(Command::RDA)].insert({ Command::RDA, s.nCCDL });
+	t[int(Command::WR)].insert({ Command::WR, s.nCCDL });
+	t[int(Command::WR)].insert({ Command::WRA, s.nCCDL });
+	t[int(Command::WRA)].insert({ Command::WR, s.nCCDL });
+	t[int(Command::WRA)].insert({ Command::WRA, s.nCCDL });
+	t[int(Command::WR)].insert({ Command::WR, s.nCCDL });
+	t[int(Command::WR)].insert({ Command::WRA, s.nCCDL });
+	t[int(Command::WRA)].insert({ Command::WR, s.nCCDL });
+	t[int(Command::WRA)].insert({ Command::WRA, s.nCCDL });
+	t[int(Command::WR)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRL });
+	t[int(Command::WR)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRL });
+	t[int(Command::WRA)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRL });
+	t[int(Command::WRA)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRL });
 
 	// RAS <-> RAS
-	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(1, s.nRRDL) });
+	t[int(Command::ACT)].insert({ Command::ACT, s.nRRDL });
 
 	/*** Bank ***/													//same bank
 	t = timing[int(Level::Bank)];
 
 	// CAS <-> RAS
-	t[int(Command::ACT)].insert({ Command::RD, TimingEntry(1, s.nRCDR) });
-	t[int(Command::ACT)].insert({ Command::RDA, TimingEntry(1, s.nRCDR) });
-	t[int(Command::ACT)].insert({ Command::WR, TimingEntry(1, s.nRCDW) });
-	t[int(Command::ACT)].insert({ Command::WRA, TimingEntry(1, s.nRCDW) });
+	t[int(Command::ACT)].insert({ Command::RD, s.nRCDR });
+	t[int(Command::ACT)].insert({ Command::RDA, s.nRCDR });
+	t[int(Command::ACT)].insert({ Command::WR, s.nRCDW });
+	t[int(Command::ACT)].insert({ Command::WRA, s.nRCDW });
 
-	t[int(Command::RD)].insert({ Command::PRE, TimingEntry(1, s.nRTP) });
-	t[int(Command::WR)].insert({ Command::PRE, TimingEntry(1, s.nCWL + s.nBL + s.nWR) });
+	t[int(Command::RD)].insert({ Command::PRE, s.nRTP });
+	t[int(Command::WR)].insert({ Command::PRE, s.nCWL + s.nBL + s.nWR });
 
-	t[int(Command::RDA)].insert({ Command::ACT, TimingEntry(1, s.nRTP + s.nRP) });
-	t[int(Command::WRA)].insert({ Command::ACT, TimingEntry(1, s.nCWL + s.nBL + s.nWR + s.nRP) });
+	t[int(Command::RDA)].insert({ Command::ACT, s.nRTP + s.nRP });
+	t[int(Command::WRA)].insert({ Command::ACT, s.nCWL + s.nBL + s.nWR + s.nRP });
 
 	// RAS <-> RAS
-	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(1, s.nRC) });
-	t[int(Command::ACT)].insert({ Command::PRE, TimingEntry(1, s.nRAS) });
-	t[int(Command::PRE)].insert({ Command::ACT, TimingEntry(1, s.nRP) });
+	t[int(Command::ACT)].insert({ Command::ACT, s.nRC });
+	t[int(Command::ACT)].insert({ Command::PRE, s.nRAS });
+	t[int(Command::PRE)].insert({ Command::ACT, s.nRP });
 
 	// REFSB
-	t[int(Command::PRE)].insert({ Command::REFSB, TimingEntry(1, s.nRP) });
-	t[int(Command::REFSB)].insert({ Command::REFSB, TimingEntry(1, s.nRFC) });
-	t[int(Command::REFSB)].insert({ Command::ACT, TimingEntry(1, s.nRFC) });
+	t[int(Command::PRE)].insert({ Command::REFSB, s.nRP });
+	t[int(Command::REFSB)].insert({ Command::REFSB, s.nRFC });
+	t[int(Command::REFSB)].insert({ Command::ACT, s.nRFC });
 }
