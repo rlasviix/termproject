@@ -28,12 +28,17 @@ int main() {
 			finish = 0;
 		}
 		out <<"tick";
-		out.width(4);
-		out << i++ << "   BANK = " << BA << "   RA = " << RA << "   ";
+		out.width(3);
+		out << i++ << "   BANK = ";
+		out.width(3);
+		out << BA << "   RA = ";
+		out.width(3);
+		out << RA << "   ";
 		finish = hbm->work(BA, RA, CA, cmd, out);
 		out << endl;
 	}
-
+	in.close();
+	out.close();
 	delete hbm;
 
 	return 0;

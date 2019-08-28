@@ -1,141 +1,35 @@
-tick   0   BANK = 0   RA = 0   ACT
-tick   1   BANK = 0   RA = 0   
-tick   2   BANK = 0   RA = 0   
-tick   3   BANK = 0   RA = 0   
-tick   4   BANK = 0   RA = 0   
-tick   5   BANK = 0   RA = 0   
-tick   6   BANK = 0   RA = 0   
-tick   7   BANK = 0   RA = 0   RD
-tick   8   BANK = 10   RA = 0   ACT
-tick   9   BANK = 10   RA = 0   
-tick  10   BANK = 10   RA = 0   
-tick  11   BANK = 10   RA = 0   
-tick  12   BANK = 10   RA = 0   
-tick  13   BANK = 10   RA = 0   
-tick  14   BANK = 10   RA = 0   
-tick  15   BANK = 10   RA = 0   RD
-tick  16   BANK = 0   RA = 1   
-tick  17   BANK = 0   RA = 1   PRE
-tick  18   BANK = 0   RA = 1   
-tick  19   BANK = 0   RA = 1   
-tick  20   BANK = 0   RA = 1   
-tick  21   BANK = 0   RA = 1   
-tick  22   BANK = 0   RA = 1   
-tick  23   BANK = 0   RA = 1   
-tick  24   BANK = 0   RA = 1   ACT
-tick  25   BANK = 0   RA = 1   
-tick  26   BANK = 0   RA = 1   
-tick  27   BANK = 0   RA = 1   
-tick  28   BANK = 0   RA = 1   
-tick  29   BANK = 0   RA = 1   
-tick  30   BANK = 0   RA = 1   
-tick  31   BANK = 0   RA = 1   RD
-tick  32   BANK = 0   RA = 1   WR
-tick  33   BANK = 2   RA = 0   ACT
-tick  34   BANK = 2   RA = 0   
-tick  35   BANK = 2   RA = 0   
-tick  36   BANK = 2   RA = 0   
-tick  37   BANK = 2   RA = 0   
-tick  38   BANK = 2   RA = 0   
-tick  39   BANK = 2   RA = 0   WR
-tick  40   BANK = 1   RA = 0   
-tick  41   BANK = 1   RA = 0   
-tick  42   BANK = 1   RA = 0   
-tick  43   BANK = 1   RA = 0   
-tick  44   BANK = 1   RA = 0   
-tick  45   BANK = 1   RA = 0   
-tick  46   BANK = 1   RA = 0   
-tick  47   BANK = 1   RA = 0   
-tick  48   BANK = 1   RA = 0   
-tick  49   BANK = 1   RA = 0   
-tick  50   BANK = 1   RA = 0   
-tick  51   BANK = 1   RA = 0   
-tick  52   BANK = 1   RA = 0   
-tick  53   BANK = 1   RA = 0   
-tick  54   BANK = 1   RA = 0   
-tick  55   BANK = 1   RA = 0   
-tick  56   BANK = 1   RA = 0   
-tick  57   BANK = 1   RA = 0   
-tick  58   BANK = 1   RA = 0   
-tick  59   BANK = 1   RA = 0   
-tick  60   BANK = 1   RA = 0   
-tick  61   BANK = 1   RA = 0   
-tick  62   BANK = 1   RA = 0   
-tick  63   BANK = 1   RA = 0   
-tick  64   BANK = 1   RA = 0   
-tick  65   BANK = 1   RA = 0   
-tick  66   BANK = 1   RA = 0   
-tick  67   BANK = 1   RA = 0   
-tick  68   BANK = 1   RA = 0   
-tick  69   BANK = 1   RA = 0   
-tick  70   BANK = 1   RA = 0   
-tick  71   BANK = 1   RA = 0   
-tick  72   BANK = 1   RA = 0   
-tick  73   BANK = 1   RA = 0   
-tick  74   BANK = 1   RA = 0   
-tick  75   BANK = 1   RA = 0   
-tick  76   BANK = 1   RA = 0   
-tick  77   BANK = 1   RA = 0   
-tick  78   BANK = 1   RA = 0   
-tick  79   BANK = 1   RA = 0   
-tick  80   BANK = 1   RA = 0   
-tick  81   BANK = 1   RA = 0   
-tick  82   BANK = 1   RA = 0   
-tick  83   BANK = 1   RA = 0   
-tick  84   BANK = 1   RA = 0   
-tick  85   BANK = 1   RA = 0   
-tick  86   BANK = 1   RA = 0   
-tick  87   BANK = 1   RA = 0   
-tick  88   BANK = 1   RA = 0   
-tick  89   BANK = 1   RA = 0   
-tick  90   BANK = 1   RA = 0   
-tick  91   BANK = 1   RA = 0   
-tick  92   BANK = 1   RA = 0   
-tick  93   BANK = 1   RA = 0   
-tick  94   BANK = 1   RA = 0   
-tick  95   BANK = 1   RA = 0   
-tick  96   BANK = 1   RA = 0   
-tick  97   BANK = 1   RA = 0   
-tick  98   BANK = 1   RA = 0   
-tick  99   BANK = 1   RA = 0   
-tick 100   BANK = 1   RA = 0   ACT
-tick 101   BANK = 1   RA = 0   
-tick 102   BANK = 1   RA = 0   
-tick 103   BANK = 1   RA = 0   
-tick 104   BANK = 1   RA = 0   
-tick 105   BANK = 1   RA = 0   
-tick 106   BANK = 1   RA = 0   
-tick 107   BANK = 1   RA = 0   RD
-tick 108   BANK = 2   RA = 0   
-tick 109   BANK = 2   RA = 0   
-tick 110   BANK = 2   RA = 0   RD
-tick 111   BANK = 3   RA = 0   ACT
-tick 112   BANK = 3   RA = 0   
-tick 113   BANK = 3   RA = 0   
-tick 114   BANK = 3   RA = 0   
-tick 115   BANK = 3   RA = 0   
-tick 116   BANK = 3   RA = 0   
-tick 117   BANK = 3   RA = 0   
-tick 118   BANK = 3   RA = 0   RD
-tick 119   BANK = 4   RA = 0   
-tick 120   BANK = 4   RA = 0   
-tick 121   BANK = 4   RA = 0   
-tick 122   BANK = 4   RA = 0   
-tick 123   BANK = 4   RA = 0   
-tick 124   BANK = 4   RA = 0   ACT
-tick 125   BANK = 4   RA = 0   
-tick 126   BANK = 4   RA = 0   
-tick 127   BANK = 4   RA = 0   
-tick 128   BANK = 4   RA = 0   
-tick 129   BANK = 4   RA = 0   
-tick 130   BANK = 4   RA = 0   
-tick 131   BANK = 4   RA = 0   RD
-tick 132   BANK = 5   RA = 0   
-tick 133   BANK = 5   RA = 0   ACT
-tick 134   BANK = 5   RA = 0   
-tick 135   BANK = 5   RA = 0   
-tick 136   BANK = 5   RA = 0   
-tick 137   BANK = 5   RA = 0   
-tick 138   BANK = 5   RA = 0   
-tick 139   BANK = 5   RA = 0   
-tick 140   BANK = 5   RA = 0   RD
+tick  0   BANK =   0   RA =   0   ACT
+tick  1   BANK =   0   RA =   0   
+tick  2   BANK =   0   RA =   0   
+tick  3   BANK =   0   RA =   0   
+tick  4   BANK =   0   RA =   0   
+tick  5   BANK =   0   RA =   0   
+tick  6   BANK =   0   RA =   0   
+tick  7   BANK =   0   RA =   0   RD
+tick  8   BANK =  10   RA =   0   ACT
+tick  9   BANK =  10   RA =   0   
+tick 10   BANK =  10   RA =   0   
+tick 11   BANK =  10   RA =   0   
+tick 12   BANK =  10   RA =   0   
+tick 13   BANK =  10   RA =   0   
+tick 14   BANK =  10   RA =   0   WR
+tick 15   BANK =   2   RA =   0   ACT
+tick 16   BANK =   2   RA =   0   
+tick 17   BANK =   2   RA =   0   
+tick 18   BANK =   2   RA =   0   
+tick 19   BANK =   2   RA =   0   
+tick 20   BANK =   2   RA =   0   
+tick 21   BANK =   2   RA =   0   WR
+tick 22   BANK =   0   RA =   0   
+tick 23   BANK =   0   RA =   0   
+tick 24   BANK =   0   RA =   0   
+tick 25   BANK =   0   RA =   0   
+tick 26   BANK =   0   RA =   0   
+tick 27   BANK =   0   RA =   0   
+tick 28   BANK =   0   RA =   0   
+tick 29   BANK =   0   RA =   0   
+tick 30   BANK =   0   RA =   0   
+tick 31   BANK =   0   RA =   0   RD
+tick 32   BANK =   2   RA =   0   WR
+tick 33   BANK =  10   RA =   0   
+tick 34   BANK =  10   RA =   0   WR

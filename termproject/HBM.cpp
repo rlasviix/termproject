@@ -174,7 +174,7 @@ void HBM::init_timing()
 	t = timing[int(Level::Rank)];
 
 	// CAS <-> CAS
-	t[int(Command::RD)].insert({ Command::RD, s.nCCDS });
+	t[int(Command::RD)].insert({ Command::RD, s.nCCDS });						//2
 	t[int(Command::RD)].insert({ Command::RDA, s.nCCDS });
 	t[int(Command::RDA)].insert({ Command::RD, s.nCCDS });
 	t[int(Command::RDA)].insert({ Command::RDA, s.nCCDS });
@@ -182,22 +182,22 @@ void HBM::init_timing()
 	t[int(Command::WR)].insert({ Command::WRA, s.nCCDS });
 	t[int(Command::WRA)].insert({ Command::WR, s.nCCDS });
 	t[int(Command::WRA)].insert({ Command::WRA, s.nCCDS });
-	t[int(Command::RD)].insert({ Command::WR, s.nCL + s.nCCDS + 2 - s.nCWL });
+	t[int(Command::RD)].insert({ Command::WR, s.nCL + s.nCCDS + 2 - s.nCWL });	//7
 	t[int(Command::RD)].insert({ Command::WRA, s.nCL + s.nCCDS + 2 - s.nCWL });
 	t[int(Command::RDA)].insert({ Command::WR, s.nCL + s.nCCDS + 2 - s.nCWL });
 	t[int(Command::RDA)].insert({ Command::WRA, s.nCL + s.nCCDS + 2 - s.nCWL });
-	t[int(Command::WR)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRS });
+	t[int(Command::WR)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRS });		//8
 	t[int(Command::WR)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRS });
 	t[int(Command::WRA)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRS });
 	t[int(Command::WRA)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRS });
 
 	t[int(Command::RD)].insert({ Command::PREA, s.nRTP });
-	t[int(Command::WR)].insert({ Command::PREA, s.nCWL + s.nBL + s.nWR });
+	t[int(Command::WR)].insert({ Command::PREA, s.nCWL + s.nBL + s.nWR });		//14
 
 	// CAS <-> PD
-	t[int(Command::RD)].insert({ Command::PDE, s.nCL + s.nBL + 1 });
+	t[int(Command::RD)].insert({ Command::PDE, s.nCL + s.nBL + 1 });			//10
 	t[int(Command::RDA)].insert({ Command::PDE, s.nCL + s.nBL + 1 });
-	t[int(Command::WR)].insert({ Command::PDE, s.nCWL + s.nBL + s.nWR });
+	t[int(Command::WR)].insert({ Command::PDE, s.nCWL + s.nBL + s.nWR });		//14
 	t[int(Command::WRA)].insert({ Command::PDE, s.nCWL + s.nBL + s.nWR + 1 }); // +1 for pre
 	t[int(Command::PDX)].insert({ Command::RD, s.nXP });
 	t[int(Command::PDX)].insert({ Command::RDA, s.nXP });
@@ -265,7 +265,7 @@ void HBM::init_timing()
 	t[int(Command::WR)].insert({ Command::WRA, s.nCCDL });
 	t[int(Command::WRA)].insert({ Command::WR, s.nCCDL });
 	t[int(Command::WRA)].insert({ Command::WRA, s.nCCDL });
-	t[int(Command::WR)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRL });
+	t[int(Command::WR)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRL });	//10
 	t[int(Command::WR)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRL });
 	t[int(Command::WRA)].insert({ Command::RD, s.nCWL + s.nBL + s.nWTRL });
 	t[int(Command::WRA)].insert({ Command::RDA, s.nCWL + s.nBL + s.nWTRL });
@@ -286,7 +286,7 @@ void HBM::init_timing()
 	t[int(Command::WR)].insert({ Command::PRE, s.nCWL + s.nBL + s.nWR });
 
 	t[int(Command::RDA)].insert({ Command::ACT, s.nRTP + s.nRP });
-	t[int(Command::WRA)].insert({ Command::ACT, s.nCWL + s.nBL + s.nWR + s.nRP });
+	t[int(Command::WRA)].insert({ Command::ACT, s.nCWL + s.nBL + s.nWR + s.nRP });	//21
 
 	// RAS <-> RAS
 	t[int(Command::ACT)].insert({ Command::ACT, s.nRC });
