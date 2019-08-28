@@ -61,28 +61,22 @@ int HBM::change_state(State state, Command command, int id) {
 int HBM::change_command(State state, Request request, int id) {			//id = RA
 	
 	//level 계산
-	if (BA == prev_BA) level = Level::Bank;
-	else if (BA / 4 == prev_BA / 4) level = Level::BankGroup;
-	else level = Level::Rank;
+	level = calculate_level(BA, prev_BA);
 	
 	switch (int(request)) {
 	case (int(Request::READ)):
 		switch (int(state)) {
 		case (int(State::Idle)):
-			if (wait(timer, level, (&node[prev_BA])->command, Command::ACT)) return false;
+			if (wait(BA, Command::ACT)) return false;
 			(&node[BA])->command = Command::ACT;
-			timer->cACT[BA] = 0;
-			timer->act.push(timer->time);
-			if (timer->act.size() > 4)timer->act.pop();
-
 			break;
-		default:	//Active, Reading, Writing, Reading_pre, Writing_pre,
+		default:	//Active, Reading, Writing
 			if ((&node[BA])->row_state[id] == State::Active) {
-				if (wait(timer, level, (&node[prev_BA])->command, Command::RD)) return false;
+				if (wait(BA, Command::RD)) return false;
 				(&node[BA])->command = Command::RD;
 			}
 			else {
-				if (wait(timer, level, (&node[prev_BA])->command, Command::PRE)) return false;
+				if (wait(BA, Command::PRE)) return false;
 				(&node[BA])->command = Command::PRE;
 			}
 		}
@@ -91,7 +85,7 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 	case (int(Request::WRITE)):
 		switch (int(state)) {
 		case (int(State::Idle)):
-			if (wait(timer, level, (&node[prev_BA])->command, Command::ACT)) return false;
+			if (wait(BA, Command::ACT)) return false;
 			(&node[BA])->command = Command::ACT;
 			timer->cACT[BA] = 0;
 			timer->act.push(timer->time);
@@ -99,11 +93,11 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 			break;
 		default:
 			if ((&node[BA])->row_state[id] == State::Active) {
-				if (wait(timer, level, (&node[prev_BA])->command, Command::WR)) return false;
+				if (wait(BA, Command::WR)) return false;
 				(&node[BA])->command = Command::WR;
 			}
 			else {
-				if (wait(timer, level, (&node[prev_BA])->command, Command::PRE)) return false;
+				if (wait(BA, Command::PRE)) return false;
 				(&node[BA])->command = Command::PRE;
 			}
 		}
@@ -113,42 +107,95 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 	return true;
 }
 
-//level, 이전 command, 다음 command
-int HBM::wait(Timer* timer, Level level, Command pre_command, Command command) {
-	SpeedEntry& s = speed_table;
-	//nFAW
-	if (command == Command::ACT) {
-		if (timer->act.size() == 4 && timer->time - timer->act.front() < s.nFAW) {
-			return true;
+
+int HBM::wait(int bank, Command command) {
+	switch (command){
+	case(Command::ACT):
+		if (node[BA].next_activate > timer->time) return true;
+		
+		//FAW
+		timer->act.push(timer->time);
+		if (timer->act.size() > 4)timer->act.pop();
+
+		//next timing 계산
+		for (int i = 0; i < num_bank; i++) {	
+			int temp_level = int(calculate_level(i, BA));
+			node[i].next_activate = max(node[i].next_activate, timer->time + timing[temp_level][int(Command::ACT)][Command::ACT], timer->act.front() + speed_table.nFAW);
 		}
-	}
-	
-	//같은 BANK ACT <-> PRE nRAS  ACT <-> ACT nRC
-	if (command == Command::ACT) {
-		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::ACT]) {
-			return true;
+		node[BA].next_read = max(node[BA].next_read, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RD]);
+		node[BA].next_write = max(node[BA].next_write, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WR]);
+		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]);
+
+	case(Command::RD):
+		if (node[BA].next_read > timer->time) return true;
+		for (int i = 0; i < num_bank; i++) {
+			int temp_level = int(calculate_level(i, BA));
+			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::RD)][Command::RD]);
+			if (timing[int(temp_level)][int(Command::RD)].find(Command::WR) != timing[int(temp_level)][int(Command::RD)].end()) {
+				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::RD)][Command::WR]);
+			}
 		}
-	}
-	if (command == Command::PRE) {
-		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]) {
-			return true;
+		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::RD)][Command::WR]);
+
+	case(Command::WR):
+		if (node[BA].next_write > timer->time) return true;
+		for (int i = 0; i < num_bank; i++) {
+			int temp_level = int(calculate_level(i, BA));
+			node[i].next_read = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::RD]);
+			if (timing[int(temp_level)][int(Command::WR)].find(Command::WR) != timing[int(temp_level)][int(Command::WR)].end()) {
+				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::WR]);
+			}
 		}
+		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
+
+	case(Command::PRE):
+		if (node[BA].next_precharge > timer->time) return true;
+		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);
 	}
-	//이전 command 와의 timing이 0일때
-	if (timing[int(level)][int(pre_command)].find(command) == timing[int(level)][int(pre_command)].end()) {
-		if (command == Command::ACT) timer->cACT[BA] = 0;
-		timer->wait_counter = 0;
-		return false;
-	}
-	//이전 command 와의 timing
-	if (timer->wait_counter < timing[int(level)][int(pre_command)][command]) {
-		return true;
-	}
-	else {
-		if (command == Command::ACT) timer->cACT[BA] = 0;
-		timer->wait_counter = 0;
-		return false;
-	}
+	return false;
+}
+////level, 이전 command, 다음 command
+//int HBM::wait(Timer* timer, Level level, Command pre_command, Command command) {
+//	SpeedEntry& s = speed_table;
+//	//nFAW
+//	if (command == Command::ACT) {
+//		if (timer->act.size() == 4 && timer->time - timer->act.front() < s.nFAW) {
+//			return true;
+//		}
+//	}
+//	
+//	//같은 BANK ACT <-> PRE nRAS  ACT <-> ACT nRC
+//	if (command == Command::ACT) {
+//		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::ACT]) {
+//			return true;
+//		}
+//	}
+//	if (command == Command::PRE) {
+//		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]) {
+//			return true;
+//		}
+//	}
+//	//이전 command 와의 timing이 0일때
+//	if (timing[int(level)][int(pre_command)].find(command) == timing[int(level)][int(pre_command)].end()) {
+//		if (command == Command::ACT) timer->cACT[BA] = 0;
+//		timer->wait_counter = 0;
+//		return false;
+//	}
+//	//이전 command 와의 timing
+//	if (timer->wait_counter < timing[int(level)][int(pre_command)][command]) {
+//		return true;
+//	}
+//	else {
+//		if (command == Command::ACT) timer->cACT[BA] = 0;
+//		timer->wait_counter = 0;
+//		return false;
+//	}
+//}
+
+HBM::Level HBM::calculate_level(int cur_bank, int prev_bank) {
+	if (cur_bank == prev_bank) return Level::Bank;
+	else if (cur_bank >> 2 == prev_bank >> 2) return Level::BankGroup;
+	else return Level::Rank;
 }
 
 void HBM::init_timing()
@@ -297,4 +344,22 @@ void HBM::init_timing()
 	t[int(Command::PRE)].insert({ Command::REFSB, s.nRP });
 	t[int(Command::REFSB)].insert({ Command::REFSB, s.nRFC });
 	t[int(Command::REFSB)].insert({ Command::ACT, s.nRFC });
+
+	//임시로 추가
+	t[int(Command::RD)].insert({ Command::RD, 0 });
+	t[int(Command::RD)].insert({ Command::RDA, 0 });
+	t[int(Command::RDA)].insert({ Command::RD, 0 });
+	t[int(Command::RDA)].insert({ Command::RDA, 0 });
+	t[int(Command::WR)].insert({ Command::WR, 0 });
+	t[int(Command::WR)].insert({ Command::WRA, 0 });
+	t[int(Command::WRA)].insert({ Command::WR, 0 });
+	t[int(Command::WRA)].insert({ Command::WRA, 0 });
+	t[int(Command::WR)].insert({ Command::WR, 0 });
+	t[int(Command::WR)].insert({ Command::WRA, 0 });
+	t[int(Command::WRA)].insert({ Command::WR, 0 });
+	t[int(Command::WRA)].insert({ Command::WRA, 0 });
+	t[int(Command::WR)].insert({ Command::RD, 0 });
+	t[int(Command::WR)].insert({ Command::RDA, 0 });
+	t[int(Command::WRA)].insert({ Command::RD, 0 });
+	t[int(Command::WRA)].insert({ Command::RDA, 0 });
 }

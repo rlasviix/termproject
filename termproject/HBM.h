@@ -71,7 +71,8 @@ public:
 		int nRFC, nREFI, nREFI1B;
 		int nPD, nXP;
 		int nCKESR, nXS;
-	} speed_table = {1000, 
+	} speed_table = {
+		1000, 
 		500, 2.0, 
 		2, 2, 3, 
 		7, 7, 6, 7, 4, 
@@ -90,6 +91,7 @@ public:
 
 	Timer* timer = new Timer();
 
+	int num_bank = 16;
 	Level level;
 	int prev_BA;
 	int BA, RA, CA;
@@ -102,7 +104,10 @@ private:
 	int change_state(State state, Command command, int id);
 	int change_command(State state, Request request, int id);
 
-	int wait(Timer* timer, Level level, Command pre_command, Command command);
+	//int wait(Timer* timer, Level level, Command pre_command, Command command);
+	int wait(int bank, Command command);
+
+	Level calculate_level(int cur_bank, int prev_bank);
 
 	void init_timing();
 };

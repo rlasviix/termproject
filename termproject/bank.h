@@ -10,9 +10,8 @@ public:
 	typename T::Command command;
 	map<int, typename T::State> row_state;
 
-	int next_write;
 	int next_read;
-	int next_precharge;
+	int next_write;
 	int next_activate;
-
+	int next_precharge;
 };
