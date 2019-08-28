@@ -109,23 +109,24 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 
 
 int HBM::wait(int bank, Command command) {
-	switch (command){
+	switch (command) {
 	case(Command::ACT):
 		if (node[BA].next_activate > timer->time) return true;
-		
+
 		//FAW
 		timer->act.push(timer->time);
-		if (timer->act.size() > 4)timer->act.pop();
+		if (timer->act.size() > 4) timer->act.pop();
 
 		//next timing °è»ê
-		for (int i = 0; i < num_bank; i++) {	
+		for (int i = 0; i < num_bank; i++) {
 			int temp_level = int(calculate_level(i, BA));
-			node[i].next_activate = max(node[i].next_activate, timer->time + timing[temp_level][int(Command::ACT)][Command::ACT], timer->act.front() + speed_table.nFAW);
+			node[i].next_activate = max(node[i].next_activate, timer->time + timing[temp_level][int(Command::ACT)][Command::ACT]);
+			if(timer->act.size() == 4) node[i].next_activate = max(node[i].next_activate, timer->act.front() + speed_table.nFAW);
 		}
 		node[BA].next_read = max(node[BA].next_read, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RD]);
 		node[BA].next_write = max(node[BA].next_write, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WR]);
 		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]);
-
+		break;
 	case(Command::RD):
 		if (node[BA].next_read > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
@@ -136,7 +137,7 @@ int HBM::wait(int bank, Command command) {
 			}
 		}
 		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::RD)][Command::WR]);
-
+		break;
 	case(Command::WR):
 		if (node[BA].next_write > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
@@ -147,10 +148,11 @@ int HBM::wait(int bank, Command command) {
 			}
 		}
 		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
-
+		break;
 	case(Command::PRE):
 		if (node[BA].next_precharge > timer->time) return true;
 		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);
+		break;
 	}
 	return false;
 }

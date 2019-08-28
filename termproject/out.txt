@@ -32,4 +32,7 @@ tick 30   BANK =   0   RA =   0
 tick 31   BANK =   0   RA =   0   RD
 tick 32   BANK =   2   RA =   0   WR
 tick 33   BANK =  10   RA =   0   
-tick 34   BANK =  10   RA =   0   WR
+tick 34   BANK =  10   RA =   0   
+tick 35   BANK =  10   RA =   0   
+tick 36   BANK =  10   RA =   0   
+tick 37   BANK =  10   RA =   0   
