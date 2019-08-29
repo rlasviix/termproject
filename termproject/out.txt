@@ -36,3 +36,4 @@ tick 34   BANK =  10   RA =   0
 tick 35   BANK =  10   RA =   0   
 tick 36   BANK =  10   RA =   0   
 tick 37   BANK =  10   RA =   0   
+tick 38   BANK =  10   RA =   0   WR

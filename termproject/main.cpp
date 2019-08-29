@@ -8,9 +8,9 @@ int main() {
 	int RA;
 	int CA;
 	int i = 0;
+	int finish = 1;
 	string cmd;
 	
-	int finish = 1;
 	HBM* hbm = new HBM();
 
 	ifstream in("in.txt");
@@ -43,4 +43,3 @@ int main() {
 
 	return 0;
 }
-

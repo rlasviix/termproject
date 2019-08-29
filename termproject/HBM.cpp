@@ -24,60 +24,57 @@ int HBM::work(int BA, int RA, int CA, string req, ofstream &out){
 	else if (req == "W") request = Request::WRITE;
 	else out << "wrong request" << endl;
 
-	new_command = change_command((&node[BA])->state, request, RA);
+	new_command = change_command(node[BA].state, request, RA);
 	if (new_command) {
-		finish = change_state((&node[BA])->state, (&node[BA])->command, RA);
-		out << command_name[int((&node[BA])->command)];
+		finish = change_state(node[BA].state, node[BA].command, RA);
+		out << command_name[int(node[BA].command)];
 	}
 	timer->tick();
 	return finish;
 }
 
-int HBM::change_state(State state, Command command, int id) {
+int HBM::change_state(State state, Command command, int ra) {
 	switch (int(command)) {
 		case (int(Command::ACT)):
-			if ((&node[BA])->state == State::Idle) {
-				(&node[BA])->state = State::Active;
-				(&node[BA])->row_state[id] = State::Active;
+			if (node[BA].state == State::Idle) {
+				node[BA].state = State::Active;
+				node[BA].row_state[ra] = State::Active;
 			}
 			else
 				return -1;
 			break;
 		case (int(Command::PRE)):
-			(&node[BA])->state = State::Idle;
-			(&node[BA])->row_state.clear();
+			node[BA].state = State::Idle;
+			node[BA].row_state.clear();
 			break;
 		case (int(Command::RD)):
-			(&node[BA])->state = State::Reading;
+			node[BA].state = State::Reading;
 			return 1;
 			break;
 		case (int(Command::WR)):
-			(&node[BA])->state = State::Writing;
+			node[BA].state = State::Writing;
 			return 1;
 			break;
 	}
 	return 0;
 }
-int HBM::change_command(State state, Request request, int id) {			//id = RA
-	
-	//level 계산
-	level = calculate_level(BA, prev_BA);
-	
+
+int HBM::change_command(State state, Request request, int ra) {
 	switch (int(request)) {
 	case (int(Request::READ)):
 		switch (int(state)) {
 		case (int(State::Idle)):
 			if (wait(BA, Command::ACT)) return false;
-			(&node[BA])->command = Command::ACT;
+			node[BA].command = Command::ACT;
 			break;
 		default:	//Active, Reading, Writing
-			if ((&node[BA])->row_state[id] == State::Active) {
+			if (node[BA].row_state[ra] == State::Active) {
 				if (wait(BA, Command::RD)) return false;
-				(&node[BA])->command = Command::RD;
+				node[BA].command = Command::RD;
 			}
 			else {
 				if (wait(BA, Command::PRE)) return false;
-				(&node[BA])->command = Command::PRE;
+				node[BA].command = Command::PRE;
 			}
 		}
 		break;
@@ -86,27 +83,22 @@ int HBM::change_command(State state, Request request, int id) {			//id = RA
 		switch (int(state)) {
 		case (int(State::Idle)):
 			if (wait(BA, Command::ACT)) return false;
-			(&node[BA])->command = Command::ACT;
-			timer->cACT[BA] = 0;
-			timer->act.push(timer->time);
-			if (timer->act.size() > 4)timer->act.pop();
+			node[BA].command = Command::ACT;
 			break;
 		default:
-			if ((&node[BA])->row_state[id] == State::Active) {
+			if (node[BA].row_state[ra] == State::Active) {
 				if (wait(BA, Command::WR)) return false;
-				(&node[BA])->command = Command::WR;
+				node[BA].command = Command::WR;
 			}
 			else {
 				if (wait(BA, Command::PRE)) return false;
-				(&node[BA])->command = Command::PRE;
+				node[BA].command = Command::PRE;
 			}
 		}
 		break;
 	}
-	prev_BA = BA;
 	return true;
 }
-
 
 int HBM::wait(int bank, Command command) {
 	switch (command) {
@@ -156,43 +148,6 @@ int HBM::wait(int bank, Command command) {
 	}
 	return false;
 }
-////level, 이전 command, 다음 command
-//int HBM::wait(Timer* timer, Level level, Command pre_command, Command command) {
-//	SpeedEntry& s = speed_table;
-//	//nFAW
-//	if (command == Command::ACT) {
-//		if (timer->act.size() == 4 && timer->time - timer->act.front() < s.nFAW) {
-//			return true;
-//		}
-//	}
-//	
-//	//같은 BANK ACT <-> PRE nRAS  ACT <-> ACT nRC
-//	if (command == Command::ACT) {
-//		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::ACT]) {
-//			return true;
-//		}
-//	}
-//	if (command == Command::PRE) {
-//		if (timer->cACT[BA] < timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]) {
-//			return true;
-//		}
-//	}
-//	//이전 command 와의 timing이 0일때
-//	if (timing[int(level)][int(pre_command)].find(command) == timing[int(level)][int(pre_command)].end()) {
-//		if (command == Command::ACT) timer->cACT[BA] = 0;
-//		timer->wait_counter = 0;
-//		return false;
-//	}
-//	//이전 command 와의 timing
-//	if (timer->wait_counter < timing[int(level)][int(pre_command)][command]) {
-//		return true;
-//	}
-//	else {
-//		if (command == Command::ACT) timer->cACT[BA] = 0;
-//		timer->wait_counter = 0;
-//		return false;
-//	}
-//}
 
 HBM::Level HBM::calculate_level(int cur_bank, int prev_bank) {
 	if (cur_bank == prev_bank) return Level::Bank;
@@ -306,10 +261,6 @@ void HBM::init_timing()
 	t[int(Command::RD)].insert({ Command::RDA, s.nCCDL });
 	t[int(Command::RDA)].insert({ Command::RD, s.nCCDL });
 	t[int(Command::RDA)].insert({ Command::RDA, s.nCCDL });
-	t[int(Command::WR)].insert({ Command::WR, s.nCCDL });
-	t[int(Command::WR)].insert({ Command::WRA, s.nCCDL });
-	t[int(Command::WRA)].insert({ Command::WR, s.nCCDL });
-	t[int(Command::WRA)].insert({ Command::WRA, s.nCCDL });
 	t[int(Command::WR)].insert({ Command::WR, s.nCCDL });
 	t[int(Command::WR)].insert({ Command::WRA, s.nCCDL });
 	t[int(Command::WRA)].insert({ Command::WR, s.nCCDL });

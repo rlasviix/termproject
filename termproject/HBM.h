@@ -17,16 +17,20 @@
 
 using namespace std;
 
+#define num_bank 16
+
 class HBM
 {
 public:
 	HBM();
 	~HBM();
+
 	enum class Request : int
 	{
 		READ, WRITE,
 		MAX
 	};
+
 	/* Command */
 	enum class Command : int
 	{
@@ -58,8 +62,6 @@ public:
 	/* Timing */
 	map<Command, int> timing[int(Level::MAX)][int(Command::MAX)];
 	
-
-
 	struct SpeedEntry {
 		int rate;
 		double freq, tCK;
@@ -84,30 +86,18 @@ public:
 		5, 0}
 	, speed_entry;
 	
-
-
-
-	Node<HBM>* node = new Node<HBM>[16];		//16 banks
+	Node<HBM>* node = new Node<HBM>[num_bank];	
 
 	Timer* timer = new Timer();
 
-	int num_bank = 16;
-	Level level;
-	int prev_BA;
 	int BA, RA, CA;
-	int counter = 0;
 	Request request;
 	int work(int BA, int RA, int CA, string command, ofstream& out);
 
-
 private:
-	int change_state(State state, Command command, int id);
-	int change_command(State state, Request request, int id);
-
-	//int wait(Timer* timer, Level level, Command pre_command, Command command);
+	int change_state(State state, Command command, int ra);
+	int change_command(State state, Request request, int ra);
 	int wait(int bank, Command command);
-
 	Level calculate_level(int cur_bank, int prev_bank);
-
 	void init_timing();
 };

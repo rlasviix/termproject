@@ -21,5 +21,4 @@ public:
 	int next_write;
 	int next_read;
 	int next_precharge;
-
 };
