@@ -4,11 +4,12 @@
 using namespace std;
 
 int main() {
+	int address;
 	int BA;
 	int RA;
 	int CA;
 	int i = 0;
-	int finish = 1;
+	bool finish = true;
 	string cmd;
 	
 	HBM* hbm = new HBM();

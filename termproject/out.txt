@@ -6,34 +6,44 @@ tick  4   BANK =   0   RA =   0
 tick  5   BANK =   0   RA =   0   
 tick  6   BANK =   0   RA =   0   
 tick  7   BANK =   0   RA =   0   RD
-tick  8   BANK =  10   RA =   0   ACT
-tick  9   BANK =  10   RA =   0   
+tick  8   BANK =   0   RA =   0   WR
+tick  9   BANK =  10   RA =   0   ACT
 tick 10   BANK =  10   RA =   0   
 tick 11   BANK =  10   RA =   0   
 tick 12   BANK =  10   RA =   0   
 tick 13   BANK =  10   RA =   0   
-tick 14   BANK =  10   RA =   0   WR
-tick 15   BANK =   2   RA =   0   ACT
-tick 16   BANK =   2   RA =   0   
+tick 14   BANK =  10   RA =   0   
+tick 15   BANK =  10   RA =   0   WR
+tick 16   BANK =   2   RA =   0   ACT
 tick 17   BANK =   2   RA =   0   
 tick 18   BANK =   2   RA =   0   
 tick 19   BANK =   2   RA =   0   
 tick 20   BANK =   2   RA =   0   
-tick 21   BANK =   2   RA =   0   WR
-tick 22   BANK =   0   RA =   0   
-tick 23   BANK =   0   RA =   0   
-tick 24   BANK =   0   RA =   0   
-tick 25   BANK =   0   RA =   0   
-tick 26   BANK =   0   RA =   0   
-tick 27   BANK =   0   RA =   0   
-tick 28   BANK =   0   RA =   0   
-tick 29   BANK =   0   RA =   0   
-tick 30   BANK =   0   RA =   0   
-tick 31   BANK =   0   RA =   0   RD
-tick 32   BANK =   2   RA =   0   WR
-tick 33   BANK =  10   RA =   0   
-tick 34   BANK =  10   RA =   0   
-tick 35   BANK =  10   RA =   0   
-tick 36   BANK =  10   RA =   0   
-tick 37   BANK =  10   RA =   0   
-tick 38   BANK =  10   RA =   0   WR
+tick 21   BANK =   2   RA =   0   
+tick 22   BANK =   2   RA =   0   WR
+tick 23   BANK =   0   RA =   1   PRE
+tick 24   BANK =   0   RA =   1   
+tick 25   BANK =   0   RA =   1   
+tick 26   BANK =   0   RA =   1   
+tick 27   BANK =   0   RA =   1   
+tick 28   BANK =   0   RA =   1   
+tick 29   BANK =   0   RA =   1   
+tick 30   BANK =   0   RA =   1   ACT
+tick 31   BANK =   0   RA =   1   
+tick 32   BANK =   0   RA =   1   
+tick 33   BANK =   0   RA =   1   
+tick 34   BANK =   0   RA =   1   
+tick 35   BANK =   0   RA =   1   
+tick 36   BANK =   0   RA =   1   
+tick 37   BANK =   0   RA =   1   RD
+tick 38   BANK =   2   RA =   0   WR
+tick 39   BANK =   0   RA =   1   
+tick 40   BANK =   0   RA =   1   
+tick 41   BANK =   0   RA =   1   
+tick 42   BANK =   0   RA =   1   
+tick 43   BANK =   0   RA =   1   
+tick 44   BANK =   0   RA =   1   
+tick 45   BANK =   0   RA =   1   
+tick 46   BANK =   0   RA =   1   
+tick 47   BANK =   0   RA =   1   
+tick 48   BANK =   0   RA =   1   RD

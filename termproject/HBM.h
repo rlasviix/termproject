@@ -92,12 +92,12 @@ public:
 
 	int BA, RA, CA;
 	Request request;
-	int work(int BA, int RA, int CA, string command, ofstream& out);
+	bool work(int BA, int RA, int CA, string command, ofstream& out);
 
 private:
-	int change_state(State state, Command command, int ra);
-	int change_command(State state, Request request, int ra);
-	int wait(int bank, Command command);
+	bool change_state(State state, Command command, int ra);
+	bool change_command(State state, Request request, int ra);
+	bool wait(int bank, Command command);
 	Level calculate_level(int cur_bank, int prev_bank);
 	void init_timing();
 };

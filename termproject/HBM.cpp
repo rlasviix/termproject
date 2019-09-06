@@ -12,13 +12,13 @@ HBM::~HBM() {
 	delete timer;
 }
 
-int HBM::work(int BA, int RA, int CA, string req, ofstream &out){
+bool HBM::work(int BA, int RA, int CA, string req, ofstream &out){
 	this->BA = BA;
 	this->RA = RA;
 	this->CA = CA;
 	
 	int new_command;
-	int finish = 0;
+	bool finish = false;
 
 	if (req == "R") request = Request::READ;
 	else if (req == "W") request = Request::WRITE;
@@ -33,7 +33,7 @@ int HBM::work(int BA, int RA, int CA, string req, ofstream &out){
 	return finish;
 }
 
-int HBM::change_state(State state, Command command, int ra) {
+bool HBM::change_state(State state, Command command, int ra) {
 	switch (int(command)) {
 		case (int(Command::ACT)):
 			if (node[BA].state == State::Idle) {
@@ -41,7 +41,7 @@ int HBM::change_state(State state, Command command, int ra) {
 				node[BA].row_state[ra] = State::Active;
 			}
 			else
-				return -1;
+				return false;
 			break;
 		case (int(Command::PRE)):
 			node[BA].state = State::Idle;
@@ -49,17 +49,17 @@ int HBM::change_state(State state, Command command, int ra) {
 			break;
 		case (int(Command::RD)):
 			node[BA].state = State::Reading;
-			return 1;
+			return true;
 			break;
 		case (int(Command::WR)):
 			node[BA].state = State::Writing;
-			return 1;
+			return true;
 			break;
 	}
 	return 0;
 }
 
-int HBM::change_command(State state, Request request, int ra) {
+bool HBM::change_command(State state, Request request, int ra) {
 	switch (int(request)) {
 	case (int(Request::READ)):
 		switch (int(state)) {
@@ -100,7 +100,7 @@ int HBM::change_command(State state, Request request, int ra) {
 	return true;
 }
 
-int HBM::wait(int bank, Command command) {
+bool HBM::wait(int bank, Command command) {
 	switch (command) {
 	case(Command::ACT):
 		if (node[BA].next_activate > timer->time) return true;
