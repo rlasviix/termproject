@@ -1,10 +1,43 @@
 #include <string.h>
+#include <sstream>
 #include "HBM.h"
+
+#define ba_width 4
+#define ra_width 14
+#define ca_width 6
+
+//#define ba_width 4
+//#define ra_width 12
+//#define ca_width 4
 
 using namespace std;
 
+void mapping(string address, int* BA, int* RA, int* CA) {
+	long tempA, tempB;
+	long physicalAddress;
+	string str;
+	address = address.erase(0, 2);
+	stringstream convert(address);
+	convert >> hex >> physicalAddress;
+
+	tempA = physicalAddress;
+	physicalAddress = physicalAddress >> ca_width;
+	tempB = physicalAddress << ca_width;
+	*CA = tempA ^ tempB;
+
+	tempA = physicalAddress;
+	physicalAddress = physicalAddress >> ra_width;
+	tempB = physicalAddress << ra_width;
+	*RA = tempA ^ tempB;
+
+	tempA = physicalAddress;
+	physicalAddress = physicalAddress >> ba_width;
+	tempB = physicalAddress << ba_width;
+	*BA = tempA ^ tempB;
+}
+
 int main() {
-	int address;
+	string address;
 	int BA;
 	int RA;
 	int CA;
@@ -24,7 +57,9 @@ int main() {
 
 	while (!finish || in.peek() != EOF) {
 		if (finish) {
-			in >> hex >> BA >> RA >> CA;
+			in >> address;
+			mapping(address, &BA, &RA, &CA);
+			//in >> hex >> BA >> RA >> CA;
 			in >> cmd;
 			finish = 0;
 		}
