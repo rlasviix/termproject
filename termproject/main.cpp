@@ -49,7 +49,6 @@ int main() {
 
 	ifstream in("in.txt");
 	ofstream out("out.txt");
-	ofstream pin("pin.csv");
 
 
 	if (!in.is_open()) {
@@ -77,8 +76,8 @@ int main() {
 	}
 	in.close();
 	out.close();
-	pin.close();
 	delete hbm;
 
+	cout << (11&(1 << 3));
 	return 0;
 }

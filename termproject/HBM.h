@@ -14,6 +14,7 @@
 
 #include "node.h"
 #include "timer.h"
+#include "pin.h"
 
 using namespace std;
 
@@ -89,6 +90,7 @@ public:
 	Node<HBM>* node = new Node<HBM>[num_bank];	
 
 	Timer* timer = new Timer();
+	PIN* pin = new PIN();
 
 	int BA, RA, CA;
 	Request request;
@@ -100,5 +102,4 @@ private:
 	bool wait(int bank, Command command);
 	Level calculate_level(int cur_bank, int prev_bank);
 	void init_timing();
-	void pin_mapping();
 };

@@ -10,6 +10,7 @@ HBM::HBM()
 HBM::~HBM() {
 	delete[] node;
 	delete timer;
+	delete pin;
 }
 
 bool HBM::work(int BA, int RA, int CA, string req, ofstream &out){
@@ -28,12 +29,10 @@ bool HBM::work(int BA, int RA, int CA, string req, ofstream &out){
 	if (new_command) {
 		finish = change_state(node[BA].state, node[BA].command, RA);
 		out << command_name[int(node[BA].command)];
-
-
+		pin->set_command(int(node[BA].command), BA, RA, CA);
 	}
-	//pin mapping
-
-
+	
+	pin->tick();
 	timer->tick();
 	return finish;
 }

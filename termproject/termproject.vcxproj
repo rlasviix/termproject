@@ -125,12 +125,13 @@
   <ItemGroup>
     <ClCompile Include="HBM.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PIN.cpp" />
     <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HBM.h" />
     <ClInclude Include="node.h" />
-    <ClInclude Include="pin.h" />
+    <ClInclude Include="PIN.h" />
     <ClInclude Include="timer.h" />
   </ItemGroup>
   <ItemGroup>
