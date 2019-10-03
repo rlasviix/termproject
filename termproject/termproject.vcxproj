@@ -130,11 +130,15 @@
   <ItemGroup>
     <ClInclude Include="HBM.h" />
     <ClInclude Include="node.h" />
+    <ClInclude Include="pin.h" />
     <ClInclude Include="timer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="in.txt" />
     <Text Include="out.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pin.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

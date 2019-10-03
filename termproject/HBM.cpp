@@ -28,7 +28,12 @@ bool HBM::work(int BA, int RA, int CA, string req, ofstream &out){
 	if (new_command) {
 		finish = change_state(node[BA].state, node[BA].command, RA);
 		out << command_name[int(node[BA].command)];
+
+
 	}
+	//pin mapping
+
+
 	timer->tick();
 	return finish;
 }

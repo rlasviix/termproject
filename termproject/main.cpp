@@ -49,6 +49,8 @@ int main() {
 
 	ifstream in("in.txt");
 	ofstream out("out.txt");
+	ofstream pin("pin.csv");
+
 
 	if (!in.is_open()) {
 		cout << " no file" << endl;
@@ -75,6 +77,7 @@ int main() {
 	}
 	in.close();
 	out.close();
+	pin.close();
 	delete hbm;
 
 	return 0;

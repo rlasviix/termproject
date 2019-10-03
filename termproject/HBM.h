@@ -100,4 +100,5 @@ private:
 	bool wait(int bank, Command command);
 	Level calculate_level(int cur_bank, int prev_bank);
 	void init_timing();
+	void pin_mapping();
 };
