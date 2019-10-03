@@ -78,6 +78,5 @@ int main() {
 	out.close();
 	delete hbm;
 
-	cout << (11&(1 << 3));
 	return 0;
 }

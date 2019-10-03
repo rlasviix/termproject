@@ -28,15 +28,15 @@ void PIN::set_command(int command, int bank_add, int row_add, int col_add) {
 	}
 	for (int i = 0; i < 4; i++) {
 		BA[i] = ba & 1;
-		ba >> 1;
+		ba = ba >> 1;
 	}
 	for (int i = 0; i < 14; i++) {
 		RA[i] = ra & 1;
-		ra >> 1;
+		ra = ra >> 1;
 	}
 	for (int i = 0; i < 6; i++) {
 		CA[i] = ca & 1;
-		ca >> 1;
+		ca = ca >> 1;
 	}
 }
 
@@ -50,7 +50,7 @@ void PIN::translate_rising() {
 		if (counter == 0) {
 			CKE = 1;
 			R[0] = 0; R[1] = 1;
-			R[3] = BA[1]; R[4] = BA[2]; R[5] = BA[4]; R[6] = BA[8];
+			R[3] = BA[0]; R[4] = BA[1]; R[5] = BA[2];
 		}
 		else {
 			R[0] = RA[5]; 
@@ -64,7 +64,7 @@ void PIN::translate_rising() {
 	case (int(Command::PRE)):
 		CKE = 1;
 		R[0] = 1; R[1] = 1; R[2] = 0;
-		R[3] = BA[1]; R[4] = BA[2]; R[5] = BA[4]; R[6] = BA[8];
+		R[3] = BA[0]; R[4] = BA[1]; R[5] = BA[2];
 		break;
 	}
 
@@ -75,22 +75,22 @@ void PIN::translate_rising() {
 	case (int(Command::RD)):
 		CKE = 1;
 		C[0] = 1; C[1] = 0; C[2] = 1; C[3] = 0;
-		C[4] = BA[1]; C[5] = BA[2]; C[6] = BA[4]; C[7] = BA[8];
+		C[4] = BA[0]; C[5] = BA[1]; C[6] = BA[2]; C[7] = BA[3];
 		break;
 	case (int(Command::RDA)):
 		CKE = 1;
 		C[0] = 1; C[1] = 0; C[2] = 1; C[3] = 1;
-		C[4] = BA[1]; C[5] = BA[2]; C[6] = BA[4]; C[7] = BA[8];
+		C[4] = BA[0]; C[5] = BA[1]; C[6] = BA[2]; C[7] = BA[3];
 		break;
 	case (int(Command::WR)):
 		CKE = 1;
 		C[0] = 1; C[1] = 0; C[2] = 0; C[3] = 0;
-		C[4] = BA[1]; C[5] = BA[2]; C[6] = BA[4]; C[7] = BA[8];
+		C[4] = BA[0]; C[5] = BA[1]; C[6] = BA[2]; C[7] = BA[3];
 		break;
 	case (int(Command::WRA)):
 		CKE = 1;
 		C[0] = 1; C[1] = 0; C[2] = 0; C[3] = 1;
-		C[4] = BA[1]; C[5] = BA[2]; C[6] = BA[4]; C[7] = BA[8];
+		C[4] = BA[0]; C[5] = BA[1]; C[6] = BA[2]; C[7] = BA[3];
 		break;
 	}
 }
@@ -141,7 +141,7 @@ void PIN::translate_falling() {
 		C[4] = CA[3];
 		C[5] = CA[4];
 		C[6] = CA[5];
-		C[7] = BA[4];
+		//C[7] = BA[4];
 		col_com = Command::NOP;
 		break;
 
@@ -153,7 +153,7 @@ void PIN::translate_falling() {
 		C[4] = CA[3];
 		C[5] = CA[4];
 		C[6] = CA[5];
-		C[7] = BA[4];
+		//C[7] = BA[4];
 		col_com = Command::NOP;
 		break;
 	case (int(Command::WR)):
@@ -164,7 +164,7 @@ void PIN::translate_falling() {
 		C[4] = CA[3];
 		C[5] = CA[4];
 		C[6] = CA[5];
-		C[7] = BA[4];
+		//C[7] = BA[4];
 		col_com = Command::NOP;
 		break;
 	case (int(Command::WRA)):
@@ -175,7 +175,7 @@ void PIN::translate_falling() {
 		C[4] = CA[3];
 		C[5] = CA[4];
 		C[6] = CA[5];
-		C[7] = BA[4];
+		//C[7] = BA[4];
 		col_com = Command::NOP;
 		break;
 	}
