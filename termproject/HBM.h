@@ -26,9 +26,10 @@ public:
 	HBM();
 	~HBM();
 
+	
 	enum class Request : int
 	{
-		READ, WRITE,
+		READ, WRITE, REFRESH,
 		MAX
 	};
 
@@ -38,12 +39,14 @@ public:
 		ACT, PRE, PREA,
 		RD, WR, RDA, WRA,
 		REF, REFSB, PDE, PDX, SRE, SRX,
+		NOP,
 		MAX
 	};
 	string command_name[int(Command::MAX)] = {
 		"ACT", "PRE",   "PREA",
 		"RD",  "WR",    "RDA",  "WRA",
 		"REF", "REFSB", "PDE",  "PDX",  "SRE", "SRX"
+		"NOP"
 	};
 
 	/* Level */
@@ -95,6 +98,8 @@ public:
 	int BA, RA, CA;
 	Request request;
 	bool work(int BA, int RA, int CA, string command, ofstream& out);
+
+	
 
 private:
 	bool change_state(State state, Command command, int ra);

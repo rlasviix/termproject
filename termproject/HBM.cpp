@@ -21,8 +21,15 @@ bool HBM::work(int BA, int RA, int CA, string req, ofstream &out){
 	int new_command;
 	bool finish = false;
 
+	if (req == "NOP") {
+		pin->tick();
+		timer->tick();
+		return true;
+	}
+
 	if (req == "R") request = Request::READ;
 	else if (req == "W") request = Request::WRITE;
+	else if (req == "REF") request = Request::REFRESH;
 	else out << "wrong request" << endl;
 
 	new_command = change_command(node[BA].state, request, RA);
@@ -177,7 +184,7 @@ void HBM::init_timing()
 	t[int(Command::WRA)].insert({ Command::WR, s.nBL });
 	t[int(Command::WRA)].insert({ Command::WRA, s.nBL });
 
-
+	
 	/*** Rank ***/													//different bank group
 	t = timing[int(Level::Rank)];
 

@@ -37,11 +37,12 @@ void mapping(string address, int* BA, int* RA, int* CA) {
 }
 
 int main() {
+	int time;
 	string address;
 	int BA;
 	int RA;
 	int CA;
-	int i = 0;
+	int tick = 0;
 	bool finish = true;
 	string cmd;
 	
@@ -50,23 +51,45 @@ int main() {
 	ifstream in("in.txt");
 	ofstream out("out.txt");
 
+	struct input
+	{
+		int time;
+		string address;
+		string cmd;
+	};
+	queue<input> job;
+
+
 
 	if (!in.is_open()) {
 		cout << " no file" << endl;
 		return 0;
 	}
 
-	while (!finish || in.peek() != EOF) {
+	while (in.peek() != EOF) {
+		in >> time;
+		in >> address;
+		in >> cmd;
+		job.push({ time, address, cmd });
+	}
+
+	while (!finish || !job.empty()) {
 		if (finish) {
-			in >> address;
-			mapping(address, &BA, &RA, &CA);
-			//in >> hex >> BA >> RA >> CA;
-			in >> cmd;
-			finish = 0;
+			time = job.front().time;
+			if (time <= tick) {
+				address = job.front().address;
+				mapping(address, &BA, &RA, &CA);
+				cmd = job.front().cmd;
+				job.pop();
+				finish = 0;
+			}
+			else {
+				cmd = "NOP";
+			}
 		}
 		out <<"tick";
 		out.width(3);
-		out << i++ << "   BANK = ";
+		out << tick++ << "   BANK = ";
 		out.width(3);
 		out << BA << "   RA = ";
 		out.width(3);
