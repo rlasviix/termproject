@@ -29,7 +29,7 @@ public:
 	
 	enum class Request : int
 	{
-		READ, WRITE, REFRESH,
+		READ, WRITE, PRECHARGE, REFRESH,
 		MAX
 	};
 
@@ -96,8 +96,9 @@ public:
 	PIN* pin = new PIN();
 
 	int BA, RA, CA;
+	bool pre;
 	Request request;
-	bool work(int BA, int RA, int CA, string command, ofstream& out);
+	bool work(bool pre, int BA, int RA, int CA, string command, ofstream& out);
 
 	
 

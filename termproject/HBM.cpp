@@ -13,11 +13,12 @@ HBM::~HBM() {
 	delete pin;
 }
 
-bool HBM::work(int BA, int RA, int CA, string req, ofstream &out){
+bool HBM::work(bool pre, int BA, int RA, int CA, string req, ofstream &out){
 	this->BA = BA;
 	this->RA = RA;
 	this->CA = CA;
-	
+	this->pre = pre;
+
 	int new_command;
 	bool finish = false;
 
@@ -29,6 +30,7 @@ bool HBM::work(int BA, int RA, int CA, string req, ofstream &out){
 
 	if (req == "R") request = Request::READ;
 	else if (req == "W") request = Request::WRITE;
+	else if (req == "PRE") request = Request::PRECHARGE;
 	else if (req == "REF") request = Request::REFRESH;
 	else out << "wrong request" << endl;
 
@@ -57,15 +59,26 @@ bool HBM::change_state(State state, Command command, int ra) {
 		case (int(Command::PRE)):
 			node[BA].state = State::Idle;
 			node[BA].row_state.clear();
-			break;
+			if (request == Request::PRECHARGE) return true;
+			else return false;
 		case (int(Command::RD)):
 			node[BA].state = State::Reading;
-			return true;
-			break;
+			if (request == Request::READ) return true;
+			else return false;
 		case (int(Command::WR)):
 			node[BA].state = State::Writing;
-			return true;
-			break;
+			if (request == Request::WRITE) return true;
+			else return false;
+		case (int(Command::RDA)):
+			node[BA].state = State::Idle;
+			node[BA].row_state.clear();
+			if (request == Request::READ) return true;
+			else return false;
+		case (int(Command::WRA)):
+			node[BA].state = State::Idle;
+			node[BA].row_state.clear();
+			if (request == Request::WRITE) return true;
+			else return false;
 	}
 	return 0;
 }
@@ -80,8 +93,15 @@ bool HBM::change_command(State state, Request request, int ra) {
 			break;
 		default:	//Active, Reading, Writing
 			if (node[BA].row_state[ra] == State::Active) {
-				if (wait(BA, Command::RD)) return false;
-				node[BA].command = Command::RD;
+				//RD 쓸지 RDA 쓸지
+				if (pre) {
+					if (wait(BA, Command::RDA)) return false;
+					node[BA].command = Command::RDA;
+				}
+				else {
+					if (wait(BA, Command::RD)) return false;
+					node[BA].command = Command::RD;
+				}
 			}
 			else {
 				if (wait(BA, Command::PRE)) return false;
@@ -98,8 +118,14 @@ bool HBM::change_command(State state, Request request, int ra) {
 			break;
 		default:
 			if (node[BA].row_state[ra] == State::Active) {
-				if (wait(BA, Command::WR)) return false;
-				node[BA].command = Command::WR;
+				if (pre) {
+					if (wait(BA, Command::WRA)) return false;
+					node[BA].command = Command::WRA;
+				}
+				else {
+					if (wait(BA, Command::WR)) return false;
+					node[BA].command = Command::WR;
+				}
 			}
 			else {
 				if (wait(BA, Command::PRE)) return false;
@@ -107,7 +133,12 @@ bool HBM::change_command(State state, Request request, int ra) {
 			}
 		}
 		break;
+
+	case(int(Request::PRECHARGE)):
+		if (wait(BA, Command::PRE)) return false;
+		node[BA].command = Command::PRE;
 	}
+	
 	return true;
 }
 
@@ -128,6 +159,8 @@ bool HBM::wait(int bank, Command command) {
 		}
 		node[BA].next_read = max(node[BA].next_read, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RD]);
 		node[BA].next_write = max(node[BA].next_write, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WR]);
+		node[BA].next_RDA = max(node[BA].next_RDA, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RDA]);
+		node[BA].next_WRA = max(node[BA].next_WRA, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WRA]);
 		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]);
 		break;
 	case(Command::RD):
@@ -152,6 +185,29 @@ bool HBM::wait(int bank, Command command) {
 		}
 		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
 		break;
+/*
+	case(Command::RDA):
+		if (node[BA].next_read > timer->time) return true;
+		for (int i = 0; i < num_bank; i++) {
+			int temp_level = int(calculate_level(i, BA));
+			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::RD)][Command::RD]);
+			if (timing[int(temp_level)][int(Command::RD)].find(Command::WR) != timing[int(temp_level)][int(Command::RD)].end()) {
+				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::RD)][Command::WR]);
+			}
+		}
+		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::RD)][Command::WR]);
+		break;
+	case(Command::WRA):
+		if (node[BA].next_write > timer->time) return true;
+		for (int i = 0; i < num_bank; i++) {
+			int temp_level = int(calculate_level(i, BA));
+			node[i].next_read = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::RD]);
+			if (timing[int(temp_level)][int(Command::WR)].find(Command::WR) != timing[int(temp_level)][int(Command::WR)].end()) {
+				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::WR]);
+			}
+		}
+		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
+		break;*/
 	case(Command::PRE):
 		if (node[BA].next_precharge > timer->time) return true;
 		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);

@@ -20,5 +20,7 @@ public:
 	int next_activate;
 	int next_write;
 	int next_read;
+	int next_WRA;
+	int next_RDA;
 	int next_precharge;
 };

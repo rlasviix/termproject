@@ -36,6 +36,21 @@ void mapping(string address, int* BA, int* RA, int* CA) {
 	*BA = tempA ^ tempB;
 }
 
+template<typename T>
+bool next_cmd_check(deque<T> job, int BA, int RA, int tick) {
+	int i = 0;
+	if (job.empty()) return false;
+	while (job.at(i).time <= tick) {
+		if (job.at(i).BA == BA) {
+			if (job.at(i).RA != RA) return true;
+			else return false;
+		}
+		if (job.size() > i + 1) i++;
+		else return false;
+	}
+	return false;
+}
+
 int main() {
 	int time;
 	string address;
@@ -44,6 +59,7 @@ int main() {
 	int CA;
 	int tick = 0;
 	bool finish = true;
+	bool pre = false;
 	string cmd;
 	
 	HBM* hbm = new HBM();
@@ -54,10 +70,12 @@ int main() {
 	struct input
 	{
 		int time;
-		string address;
+		int BA;
+		int RA;
+		int CA;
 		string cmd;
 	};
-	queue<input> job;
+	deque<input> job;
 
 
 
@@ -69,18 +87,21 @@ int main() {
 	while (in.peek() != EOF) {
 		in >> time;
 		in >> address;
+		mapping(address, &BA, &RA, &CA);
 		in >> cmd;
-		job.push({ time, address, cmd });
+		job.push_back({ time, BA, RA, CA, cmd });
 	}
 
 	while (!finish || !job.empty()) {
 		if (finish) {
 			time = job.front().time;
 			if (time <= tick) {
-				address = job.front().address;
-				mapping(address, &BA, &RA, &CA);
+				BA = job.front().BA;
+				RA = job.front().RA;
+				CA = job.front().CA;
 				cmd = job.front().cmd;
-				job.pop();
+				job.pop_front();
+				pre = next_cmd_check(job, BA, RA, tick);
 				finish = 0;
 			}
 			else {
@@ -94,7 +115,8 @@ int main() {
 		out << BA << "   RA = ";
 		out.width(3);
 		out << RA << "   ";
-		finish = hbm->work(BA, RA, CA, cmd, out);
+		
+		finish = hbm->work(pre, BA, RA, CA, cmd, out);
 		out << endl;
 	}
 	in.close();
