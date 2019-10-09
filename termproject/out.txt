@@ -1,11 +1,11 @@
 tick  0   BANK =   0   RA =   0   ACT
-tick  1   BANK =   0   RA =   0   RDA
-tick  2   BANK =   0   RA = 1024   
-tick  3   BANK =   0   RA = 1024   
-tick  4   BANK =   0   RA = 1024   
-tick  5   BANK =   0   RA = 1024   
-tick  6   BANK =   0   RA = 1024   
-tick  7   BANK =   0   RA = 1024   
+tick  1   BANK =   0   RA =   0   
+tick  2   BANK =   0   RA =   0   
+tick  3   BANK =   0   RA =   0   
+tick  4   BANK =   0   RA =   0   
+tick  5   BANK =   0   RA =   0   
+tick  6   BANK =   0   RA =   0   
+tick  7   BANK =   0   RA =   0   RDA
 tick  8   BANK =   0   RA = 1024   
 tick  9   BANK =   0   RA = 1024   
 tick 10   BANK =   0   RA = 1024   

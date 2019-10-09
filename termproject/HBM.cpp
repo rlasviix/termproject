@@ -168,8 +168,10 @@ bool HBM::wait(int bank, Command command) {
 		for (int i = 0; i < num_bank; i++) {
 			int temp_level = int(calculate_level(i, BA));
 			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::RD)][Command::RD]);
+			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::RD)][Command::RDA]);
 			if (timing[int(temp_level)][int(Command::RD)].find(Command::WR) != timing[int(temp_level)][int(Command::RD)].end()) {
 				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::RD)][Command::WR]);
+				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::RD)][Command::WRA]);
 			}
 		}
 		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::RD)][Command::WR]);
@@ -178,36 +180,43 @@ bool HBM::wait(int bank, Command command) {
 		if (node[BA].next_write > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
 			int temp_level = int(calculate_level(i, BA));
-			node[i].next_read = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::RD]);
+			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::WR)][Command::RD]);
+			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::WR)][Command::RDA]);
 			if (timing[int(temp_level)][int(Command::WR)].find(Command::WR) != timing[int(temp_level)][int(Command::WR)].end()) {
 				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::WR]);
+				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::WR)][Command::WRA]);
 			}
 		}
 		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
 		break;
-/*
+
 	case(Command::RDA):
 		if (node[BA].next_read > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
 			int temp_level = int(calculate_level(i, BA));
-			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::RD)][Command::RD]);
-			if (timing[int(temp_level)][int(Command::RD)].find(Command::WR) != timing[int(temp_level)][int(Command::RD)].end()) {
-				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::RD)][Command::WR]);
+			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::RDA)][Command::RD]);
+			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::RDA)][Command::RDA]);
+			if (timing[int(temp_level)][int(Command::RDA)].find(Command::WR) != timing[int(temp_level)][int(Command::RDA)].end()) {
+				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::RDA)][Command::WR]);
+				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::RDA)][Command::WRA]);
 			}
 		}
-		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::RD)][Command::WR]);
+		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::RDA)][Command::ACT]);
 		break;
 	case(Command::WRA):
 		if (node[BA].next_write > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
 			int temp_level = int(calculate_level(i, BA));
-			node[i].next_read = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::RD]);
-			if (timing[int(temp_level)][int(Command::WR)].find(Command::WR) != timing[int(temp_level)][int(Command::WR)].end()) {
-				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WR)][Command::WR]);
+			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::WRA)][Command::RD]);
+			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::WRA)][Command::RDA]);
+			if (timing[int(temp_level)][int(Command::WRA)].find(Command::WR) != timing[int(temp_level)][int(Command::WRA)].end()) {
+				node[i].next_write = max(node[i].next_write, timer->time + timing[temp_level][int(Command::WRA)][Command::WR]);
+				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::WRA)][Command::WRA]);
 			}
 		}
-		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
-		break;*/
+		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::WRA)][Command::ACT]);
+		break;
+
 	case(Command::PRE):
 		if (node[BA].next_precharge > timer->time) return true;
 		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);
