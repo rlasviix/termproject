@@ -68,6 +68,12 @@ bool HBM::change_state(State state, Command command, int ra) {
 			node[BA].row_state.clear();
 			if (request == Request::PRECHARGE) return true;
 			else return false;
+		case (int(Command::PREA)):
+			for (int i = 0; i < num_bank; i++) {
+				node[i].state = State::Idle;
+				node[i].row_state.clear();
+			}
+			return false;
 		case (int(Command::RD)):
 			node[BA].state = State::Reading;
 			if (request == Request::READ) return true;
@@ -85,6 +91,10 @@ bool HBM::change_state(State state, Command command, int ra) {
 			node[BA].state = State::Idle;
 			node[BA].row_state.clear();
 			if (request == Request::WRITE) return true;
+			else return false;
+		case (int(Command::REF)):
+			node[BA].state = State::Idle;
+			if (request == Request::REFRESH) return true;
 			else return false;
 	}
 	return 0;
@@ -144,8 +154,45 @@ bool HBM::change_command(State state, Request request, int ra) {
 	case(int(Request::PRECHARGE)):
 		if (wait(BA, Command::PRE)) return false;
 		node[BA].command = Command::PRE;
+	//////////////////////////////////////////////////////////////////////////////////////////
+	case (int(Request::REFRESH)):
+		//모든 bank idle 인지 확인
+		all_idle = true;
+		for (int i = 0; i < num_bank; i++) {
+			if (node[i].state != State::Idle) {
+				all_idle = false;
+				break;
+			}
+		}
+
+		//모든 BANK IDLE - REF
+		if (all_idle) {
+			for (int i = 0; i < num_bank; i++) {
+				if (wait(i, Command::REF)) {
+
+					return false;
+				}
+				int x = 0;
+			}
+			for (int i = 0; i < num_bank; i++) {
+				node[i].command = Command::REF;
+			}
+			break;
+		}
+		//ACT BANK 존재 - PREA
+		else {
+			for (int i = 0; i < num_bank; i++) {
+				if (wait(i, Command::PREA)) return false;
+			}
+			for (int i = 0; i < num_bank; i++) {
+				node[BA].command = Command::PREA;
+			}
+		}
+		break;
 	}
 	
+
+
 	return true;
 }
 
@@ -227,6 +274,17 @@ bool HBM::wait(int bank, Command command) {
 	case(Command::PRE):
 		if (node[BA].next_precharge > timer->time) return true;
 		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);
+		node[BA].next_refresh = max(node[BA].next_refresh, timer->time + timing[int(Level::Rank)][int(Command::PRE)][Command::REF]);
+		break;
+	case(Command::PREA):
+		if (node[bank].next_precharge > timer->time) return true;
+		node[bank].next_activate = max(node[bank].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);
+		node[bank].next_refresh = max(node[bank].next_refresh, timer->time + timing[int(Level::Rank)][int(Command::PRE)][Command::REF]);
+		break;
+	case(Command::REF):
+		if (node[bank].next_refresh > timer->time) return true;
+		node[bank].next_activate = max(node[bank].next_activate, timer->time + timing[int(Level::Rank)][int(Command::REF)][Command::ACT]);
+		node[bank].next_refresh = max(node[bank].next_refresh, timer->time + timing[int(Level::Rank)][int(Command::REF)][Command::REF]);
 		break;
 	}
 	return false;

@@ -23,4 +23,5 @@ public:
 	int next_WRA;
 	int next_RDA;
 	int next_precharge;
+	int next_refresh;
 };

@@ -85,7 +85,7 @@ public:
 		17, 24, 
 		7, 2, 4, 8, 
 		4, 5, 20,
-		0, 1950, 0, 
+		3, 1950, 0, 
 		5, 5, 
 		5, 0}
 	, speed_entry;
@@ -97,7 +97,8 @@ public:
 
 	int BA, RA, CA;
 	bool pre;
-	Request request;
+	bool all_idle = 1;	//refresh에서 사용
+	Request request;	//rda, rd, wr, wra에서 ra 바뀌는지 확인
 	bool work(bool pre, int BA, int RA, int CA, string command, ofstream& out);
 
 	

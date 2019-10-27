@@ -66,6 +66,15 @@ void PIN::translate_rising() {
 		R[0] = 1; R[1] = 1; R[2] = 0;
 		R[3] = BA[0]; R[4] = BA[1]; R[5] = BA[2];
 		break;
+	case (int(Command::PREA)):
+		CKE = 1;
+		R[0] = 1; R[1] = 1; R[2] = 0;
+		R[3] = BA[0]; R[4] = BA[1]; R[5] = BA[2];
+		break;
+	case (int(Command::REF)):
+		CKE = 1;
+		R[0] = 0; R[1] = 0; R[2] = 1;	//3,4,5 don't care
+		break;
 	}
 
 	switch (int(col_com)) {
@@ -126,6 +135,19 @@ void PIN::translate_falling() {
 //		R[3] = BA[4];
 		R[4] = 0;
 		R[5] = BA[3];
+		row_com = Command::NOP;
+		break;
+	case (int(Command::PREA)):
+		//R[3] = BA[4];
+		R[4] = 1;
+		R[5] = BA[3];
+		row_com = Command::NOP;
+		break;
+	case (int(Command::REF)):
+		//0,1, 5 don't care
+		//2 parity
+		//R[3] = BA[4];
+		R[4] = 1;
 		row_com = Command::NOP;
 		break;
 	}

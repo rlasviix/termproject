@@ -1,10 +1,12 @@
   0   BANK =   0   RA =  65   ACT
   7   BANK =   0   RA =  65   RD
-  8   BANK =   0   RA =  65   WRA
- 29   BANK =   0   RA =  73   ACT
- 36   BANK =   0   RA =  73   RD
- 37   BANK =  10   RA =   1   ACT
- 43   BANK =  10   RA =   1   WR
+  8   BANK =   0   RA =  65   WR
+ 17   BANK =   0   RA =  65   PREA
+ 24   BANK =   0   RA =  65   REF
+ 27   BANK =   0   RA =  73   ACT
+ 34   BANK =   0   RA =  73   RD
+ 35   BANK =  10   RA =   1   ACT
+ 41   BANK =  10   RA =   1   WR
 100   BANK =   0   RA =   1   PRE
 107   BANK =   0   RA =   1   ACT
 114   BANK =   0   RA =   1   RD
