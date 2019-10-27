@@ -37,7 +37,14 @@ bool HBM::work(bool pre, int BA, int RA, int CA, string req, ofstream &out){
 	new_command = change_command(node[BA].state, request, RA);
 	if (new_command) {
 		finish = change_state(node[BA].state, node[BA].command, RA);
+		out.width(3);
+		out << timer->time << "   BANK = ";
+		out.width(3);
+		out << BA << "   RA = ";
+		out.width(3);
+		out << RA << "   ";
 		out << command_name[int(node[BA].command)];
+		out << endl;
 		pin->set_command(int(node[BA].command), BA, RA, CA);
 	}
 	

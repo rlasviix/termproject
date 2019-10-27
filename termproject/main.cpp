@@ -108,16 +108,18 @@ int main() {
 				cmd = "NOP";
 			}
 		}
-		out <<"tick";
+		/*out <<"tick";
 		out.width(3);
 		out << tick++ << "   BANK = ";
 		out.width(3);
 		out << BA << "   RA = ";
 		out.width(3);
 		out << RA << "   ";
-		
+		*/
+		tick++; //앞에 주석 풀시 삭제
+
 		finish = hbm->work(pre, BA, RA, CA, cmd, out);
-		out << endl;
+		/*out << endl;*/
 	}
 	in.close();
 	out.close();

@@ -5,7 +5,7 @@ using namespace std;
 
 
 PIN::PIN(){
-	output.open("pin.csv");
+	output.open("pin.csv", std::ios::binary);
 	row_com = Command::NOP;
 	col_com = Command::NOP;
 }
@@ -105,7 +105,7 @@ void PIN::translate_falling() {
 			R[0] = RA[11];
 			R[1] = RA[12];
 			//R[2] = RA[7);
-			R[3] = BA[4];
+//			R[3] = BA[4];
 			R[4] = RA[13];
 			R[5] = BA[3];
 			counter = 1;
@@ -123,7 +123,7 @@ void PIN::translate_falling() {
 		}
 		break;
 	case (int(Command::PRE)):
-		R[3] = BA[4];
+//		R[3] = BA[4];
 		R[4] = 0;
 		R[5] = BA[3];
 		row_com = Command::NOP;
@@ -189,13 +189,22 @@ void PIN::print(){
 	for (int i = 0; i < 9; i++) {
 		output << C[i];
 	}
-	output << " ";
+//	output << endl;
 }
 
 void PIN::tick() {
 	translate_rising();
 	print();
+	output << " ";
 	translate_falling();
 	print();
 	output << endl;
 }
+
+/*
+void PIN::test() {
+	input.open("pin.csv");
+
+	input.close;
+
+}*/

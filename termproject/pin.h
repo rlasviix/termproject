@@ -37,6 +37,7 @@ public:
 	void tick();
 
 	ofstream output;
+	ifstream input;
 	Command row_com;
 	Command col_com;
 	bool BA[4], RA[14], CA[6];
@@ -44,6 +45,8 @@ public:
 	bool CKE = 0;
 	bool R[7] = { 0, };
 	bool C[9] = { 0, };
+
+	void test();
 
 private:
 	void translate_rising();
