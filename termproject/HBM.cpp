@@ -168,11 +168,7 @@ bool HBM::change_command(State state, Request request, int ra) {
 		//모든 BANK IDLE - REF
 		if (all_idle) {
 			for (int i = 0; i < num_bank; i++) {
-				if (wait(i, Command::REF)) {
-
-					return false;
-				}
-				int x = 0;
+				if (wait(i, Command::REF)) return false;
 			}
 			for (int i = 0; i < num_bank; i++) {
 				node[i].command = Command::REF;
@@ -199,7 +195,7 @@ bool HBM::change_command(State state, Request request, int ra) {
 bool HBM::wait(int bank, Command command) {
 	switch (command) {
 	case(Command::ACT):
-		if (node[BA].next_activate > timer->time) return true;
+		if (node[bank].next_activate > timer->time) return true;
 
 		//FAW
 		timer->act.push(timer->time);
@@ -207,20 +203,20 @@ bool HBM::wait(int bank, Command command) {
 
 		//next timing 계산
 		for (int i = 0; i < num_bank; i++) {
-			int temp_level = int(calculate_level(i, BA));
+			int temp_level = int(calculate_level(i, bank));
 			node[i].next_activate = max(node[i].next_activate, timer->time + timing[temp_level][int(Command::ACT)][Command::ACT]);
 			if(timer->act.size() == 4) node[i].next_activate = max(node[i].next_activate, timer->act.front() + speed_table.nFAW);
 		}
-		node[BA].next_read = max(node[BA].next_read, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RD]);
-		node[BA].next_write = max(node[BA].next_write, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WR]);
-		node[BA].next_RDA = max(node[BA].next_RDA, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RDA]);
-		node[BA].next_WRA = max(node[BA].next_WRA, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WRA]);
-		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]);
+		node[bank].next_read = max(node[bank].next_read, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RD]);
+		node[bank].next_write = max(node[bank].next_write, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WR]);
+		node[bank].next_RDA = max(node[bank].next_RDA, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::RDA]);
+		node[bank].next_WRA = max(node[bank].next_WRA, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::WRA]);
+		node[bank].next_precharge = max(node[bank].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::ACT)][Command::PRE]);
 		break;
 	case(Command::RD):
-		if (node[BA].next_read > timer->time) return true;
+		if (node[bank].next_read > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
-			int temp_level = int(calculate_level(i, BA));
+			int temp_level = int(calculate_level(i, bank));
 			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::RD)][Command::RD]);
 			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::RD)][Command::RDA]);
 			if (timing[int(temp_level)][int(Command::RD)].find(Command::WR) != timing[int(temp_level)][int(Command::RD)].end()) {
@@ -228,12 +224,12 @@ bool HBM::wait(int bank, Command command) {
 				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::RD)][Command::WRA]);
 			}
 		}
-		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::RD)][Command::WR]);
+		node[bank].next_precharge = max(node[bank].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::RD)][Command::WR]);
 		break;
 	case(Command::WR):
-		if (node[BA].next_write > timer->time) return true;
+		if (node[bank].next_write > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
-			int temp_level = int(calculate_level(i, BA));
+			int temp_level = int(calculate_level(i, bank));
 			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::WR)][Command::RD]);
 			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::WR)][Command::RDA]);
 			if (timing[int(temp_level)][int(Command::WR)].find(Command::WR) != timing[int(temp_level)][int(Command::WR)].end()) {
@@ -241,13 +237,13 @@ bool HBM::wait(int bank, Command command) {
 				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::WR)][Command::WRA]);
 			}
 		}
-		node[BA].next_precharge = max(node[BA].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
+		node[bank].next_precharge = max(node[bank].next_precharge, timer->time + timing[int(Level::Bank)][int(Command::WR)][Command::WR]);
 		break;
 
 	case(Command::RDA):
-		if (node[BA].next_read > timer->time) return true;
+		if (node[bank].next_read > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
-			int temp_level = int(calculate_level(i, BA));
+			int temp_level = int(calculate_level(i, bank));
 			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::RDA)][Command::RD]);
 			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::RDA)][Command::RDA]);
 			if (timing[int(temp_level)][int(Command::RDA)].find(Command::WR) != timing[int(temp_level)][int(Command::RDA)].end()) {
@@ -255,12 +251,12 @@ bool HBM::wait(int bank, Command command) {
 				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::RDA)][Command::WRA]);
 			}
 		}
-		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::RDA)][Command::ACT]);
+		node[bank].next_activate = max(node[bank].next_activate, timer->time + timing[int(Level::Bank)][int(Command::RDA)][Command::ACT]);
 		break;
 	case(Command::WRA):
-		if (node[BA].next_write > timer->time) return true;
+		if (node[bank].next_write > timer->time) return true;
 		for (int i = 0; i < num_bank; i++) {
-			int temp_level = int(calculate_level(i, BA));
+			int temp_level = int(calculate_level(i, bank));
 			node[i].next_read = max(node[i].next_read, timer->time + timing[temp_level][int(Command::WRA)][Command::RD]);
 			node[i].next_RDA = max(node[i].next_RDA, timer->time + timing[temp_level][int(Command::WRA)][Command::RDA]);
 			if (timing[int(temp_level)][int(Command::WRA)].find(Command::WR) != timing[int(temp_level)][int(Command::WRA)].end()) {
@@ -268,13 +264,13 @@ bool HBM::wait(int bank, Command command) {
 				node[i].next_WRA = max(node[i].next_WRA, timer->time + timing[temp_level][int(Command::WRA)][Command::WRA]);
 			}
 		}
-		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::WRA)][Command::ACT]);
+		node[bank].next_activate = max(node[bank].next_activate, timer->time + timing[int(Level::Bank)][int(Command::WRA)][Command::ACT]);
 		break;
 
 	case(Command::PRE):
-		if (node[BA].next_precharge > timer->time) return true;
-		node[BA].next_activate = max(node[BA].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);
-		node[BA].next_refresh = max(node[BA].next_refresh, timer->time + timing[int(Level::Rank)][int(Command::PRE)][Command::REF]);
+		if (node[bank].next_precharge > timer->time) return true;
+		node[bank].next_activate = max(node[bank].next_activate, timer->time + timing[int(Level::Bank)][int(Command::PRE)][Command::ACT]);
+		node[bank].next_refresh = max(node[bank].next_refresh, timer->time + timing[int(Level::Rank)][int(Command::PRE)][Command::REF]);
 		break;
 	case(Command::PREA):
 		if (node[bank].next_precharge > timer->time) return true;
@@ -339,21 +335,8 @@ void HBM::init_timing()
 	t[int(Command::RD)].insert({ Command::PREA, s.nRTP });
 	t[int(Command::WR)].insert({ Command::PREA, s.nCWL + s.nBL + s.nWR });		//14
 
-	// CAS <-> PD
-	t[int(Command::RD)].insert({ Command::PDE, s.nCL + s.nBL + 1 });			//10
-	t[int(Command::RDA)].insert({ Command::PDE, s.nCL + s.nBL + 1 });
-	t[int(Command::WR)].insert({ Command::PDE, s.nCWL + s.nBL + s.nWR });		//14
-	t[int(Command::WRA)].insert({ Command::PDE, s.nCWL + s.nBL + s.nWR + 1 }); // +1 for pre
-	t[int(Command::PDX)].insert({ Command::RD, s.nXP });
-	t[int(Command::PDX)].insert({ Command::RDA, s.nXP });
-	t[int(Command::PDX)].insert({ Command::WR, s.nXP });
-	t[int(Command::PDX)].insert({ Command::WRA, s.nXP });
-
-	// CAS <-> SR: none (all banks have to be precharged)
-
 	// RAS <-> RAS
 	t[int(Command::ACT)].insert({ Command::ACT, s.nRRDS });
-//	t[int(Command::ACT)].insert({ Command::ACT, TimingEntry(4, s.nFAW });
 	t[int(Command::ACT)].insert({ Command::PREA, s.nRAS });
 	t[int(Command::PREA)].insert({ Command::ACT, s.nRP });
 
@@ -362,38 +345,9 @@ void HBM::init_timing()
 	t[int(Command::PREA)].insert({ Command::REF, s.nRP });
 	t[int(Command::REF)].insert({ Command::ACT, s.nRFC });
 
-	// RAS <-> PD
-	t[int(Command::ACT)].insert({ Command::PDE, 1 });
-	t[int(Command::PDX)].insert({ Command::ACT, s.nXP });
-	t[int(Command::PDX)].insert({ Command::PRE, s.nXP });
-	t[int(Command::PDX)].insert({ Command::PREA, s.nXP });
-
-	// RAS <-> SR
-	t[int(Command::PRE)].insert({ Command::SRE, s.nRP });
-	t[int(Command::PREA)].insert({ Command::SRE, s.nRP });
-	t[int(Command::SRX)].insert({ Command::ACT, s.nXS });
-
 	// REF <-> REF
 	t[int(Command::REF)].insert({ Command::REF, s.nRFC });
 
-	// REF <-> PD
-	t[int(Command::REF)].insert({ Command::PDE, 1 });
-	t[int(Command::PDX)].insert({ Command::REF, s.nXP });
-
-	// REF <-> SR
-	t[int(Command::SRX)].insert({ Command::REF, s.nXS });
-
-	// PD <-> PD
-	t[int(Command::PDE)].insert({ Command::PDX, s.nPD });
-	t[int(Command::PDX)].insert({ Command::PDE, s.nXP });
-
-	// PD <-> SR
-	t[int(Command::PDX)].insert({ Command::SRE, s.nXP });
-	t[int(Command::SRX)].insert({ Command::PDE, s.nXS });
-
-	// SR <-> SR
-	t[int(Command::SRE)].insert({ Command::SRX, s.nCKESR });
-	t[int(Command::SRX)].insert({ Command::SRE, s.nXS });
 
 	/*** Bank Group ***/											//same bank group
 	t = timing[int(Level::BankGroup)];
