@@ -45,9 +45,6 @@ public:
 	bool CKE = 0;
 	bool R[7] = { 0, };
 	bool C[9] = { 0, };
-
-	void test();
-
 private:
 	void translate_rising();
 	void translate_falling();

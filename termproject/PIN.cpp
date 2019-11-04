@@ -44,7 +44,7 @@ void PIN::set_command(int command, int bank_add, int row_add, int col_add) {
 void PIN::translate_rising() {
 	switch (int(row_com)) {
 	case (int(Command::NOP)):
-		R[0] = 1; R[1] = 1; R[2] = 1;
+		R[0] = 1; R[1] = 1; R[2] = 1;		
 		break;
 	case (int(Command::ACT)):
 		if (counter == 0) {
@@ -113,7 +113,7 @@ void PIN::translate_falling() {
 			CKE = 1;
 			R[0] = RA[11];
 			R[1] = RA[12];
-			//R[2] = RA[7);
+			//R[2] = RA[7];
 //			R[3] = BA[4];
 			R[4] = RA[13];
 			R[5] = BA[3];
@@ -123,7 +123,7 @@ void PIN::translate_falling() {
 			CKE = 1;
 			R[0] = RA[0];
 			R[1] = RA[1];
-			//R[2] = RA[7);
+			//R[2] = RA[7];
 			R[3] = RA[2];
 			R[4] = RA[3];
 			R[5] = RA[4];
@@ -211,22 +211,27 @@ void PIN::print(){
 	for (int i = 0; i < 9; i++) {
 		output << C[i];
 	}
-//	output << endl;
+	/*
+	if (row_com != Command::NOP) {
+		for (int i = 0; i < 7; i++) {
+			cout << R[i];
+		}
+		cout << endl;
+	}
+	if (col_com != Command::NOP) {
+		for (int i = 0; i < 9; i++) {
+			cout << C[i];
+		}
+		cout << endl;
+	}
+	*/
 }
 
 void PIN::tick() {
 	translate_rising();
 	print();
-	output << " ";
+	output << ",";
 	translate_falling();
 	print();
 	output << endl;
 }
-
-/*
-void PIN::test() {
-	input.open("pin.csv");
-
-	input.close;
-
-}*/
