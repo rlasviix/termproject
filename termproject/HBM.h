@@ -74,9 +74,7 @@ public:
 		int nRAS, nRC;
 		int nRTP, nWTRS, nWTRL, nWR;
 		int nRRDS, nRRDL, nFAW;
-		int nRFC, nREFI, nREFI1B;
-		int nPD, nXP;
-		int nCKESR, nXS;
+		int nRFC;
 	} speed_table = {
 		1000, 
 		500, 2.0, 
@@ -85,9 +83,7 @@ public:
 		17, 24, 
 		7, 2, 4, 8, 
 		4, 5, 20,
-		3, 1950, 0, 
-		5, 5, 
-		5, 0}
+		130}
 	, speed_entry;
 	
 	Node<HBM>* node = new Node<HBM>[num_bank];	

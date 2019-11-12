@@ -5,10 +5,11 @@
  35   BANK =   0   RA =  69   WR
  46   BANK =   0   RA =  69   PREA
  53   BANK =   0   RA =  69   REF
- 56   BANK =   0   RA =  73   ACT
- 63   BANK =   0   RA =  73   RD
- 64   BANK =  10   RA =   1   ACT
- 70   BANK =  10   RA =   1   WR
-100   BANK =   0   RA =   1   PRE
-107   BANK =   0   RA =   1   ACT
-114   BANK =   0   RA =   1   RD
+183   BANK =   0   RA =  73   ACT
+190   BANK =   0   RA =  73   RD
+191   BANK =  10   RA =   1   ACT
+197   BANK =  10   RA =   1   WR
+200   BANK =   0   RA =   1   PRE
+207   BANK =   0   RA =   1   ACT
+214   BANK =   0   RA =   1   RD
+215   BANK =   0   RA =   1   RD
